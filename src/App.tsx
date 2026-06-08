@@ -39,6 +39,9 @@ type BannerRules = {
   accent: string
 }
 
+const zzzCharacterAsset =
+  'https://fastcdn.hoyoverse.com/static-resource-v2/2024/05/17/ce1888e31d79d6d4b2f4ad9b25fbbd68_1850626400856033913.png'
+
 type PullResult = {
   id: string
   number: number
@@ -82,7 +85,7 @@ const presets: BannerRules[] = [
     offBannerPool: ['Jean', 'Diluc', 'Mona', 'Keqing', 'Tighnari', 'Dehya', 'Qiqi'],
     fourStarPool: ['Xingqiu', 'Fischl', 'Bennett', 'Sucrose', 'Diona', 'Rosaria', 'Beidou'],
     threeStarPool: ['Traveler gear', 'Slingshot', 'Magic Guide', 'Sharpshooter\'s Oath', 'Black Tassel'],
-    imageUrl: '',
+    imageUrl: zzzCharacterAsset,
     baseFiveRate: 0.6,
     softPityStart: 74,
     hardPity: 90,
@@ -105,7 +108,7 @@ const presets: BannerRules[] = [
     offBannerPool: ['Himeko', 'Bailu', 'Bronya', 'Welt', 'Yanqing', 'Clara', 'Gepard'],
     fourStarPool: ['March 7th', 'Dan Heng', 'Asta', 'Pela', 'Sampo', 'Tingyun', 'Xueyi'],
     threeStarPool: ['Generic light cone', 'Stellar scrap', 'Trailblazer salvage', 'Calibration unit'],
-    imageUrl: '',
+    imageUrl: zzzCharacterAsset,
     baseFiveRate: 0.6,
     softPityStart: 74,
     hardPity: 90,
@@ -128,7 +131,7 @@ const presets: BannerRules[] = [
     offBannerPool: ['Soldier 11', 'Rina', 'Koleda', 'Lycaon', 'Grace', 'Nekomata', 'Alexandrina'],
     fourStarPool: ['Billy', 'Anby', 'Nicole', 'Ben', 'Corin', 'Anton', 'Seth'],
     threeStarPool: ['W-Engine scrap', 'Hollow material', 'Drive disc shard', 'Inter-Knot coupon'],
-    imageUrl: '',
+    imageUrl: zzzCharacterAsset,
     baseFiveRate: 0.6,
     softPityStart: 74,
     hardPity: 90,
@@ -151,7 +154,7 @@ const presets: BannerRules[] = [
     offBannerPool: ['Verina', 'Lingyang', 'Calcharo', 'Encore', 'Jianxin', 'Shorekeeper', 'Encore'],
     fourStarPool: ['Danjin', 'Sanhua', 'Mortefi', 'Chixia', 'Baizhi', 'Yangyang', 'Taoqi'],
     threeStarPool: ['Tuner scrap', 'Weapon shell', 'Resonance dust', 'Casket material'],
-    imageUrl: '',
+    imageUrl: zzzCharacterAsset,
     baseFiveRate: 0.8,
     softPityStart: 66,
     hardPity: 80,
@@ -176,7 +179,7 @@ const customPreset: BannerRules = {
   offBannerPool: ['Off-banner unit'],
   fourStarPool: ['4-star reward'],
   threeStarPool: ['3-star reward'],
-  imageUrl: '',
+  imageUrl: zzzCharacterAsset,
   baseFiveRate: 1,
   softPityStart: 70,
   hardPity: 90,

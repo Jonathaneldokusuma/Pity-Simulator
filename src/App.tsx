@@ -19,8 +19,13 @@ type BannerRules = {
   id: string
   game: string
   banner: string
+  bannerKind: 'character' | 'weapon'
   featuredName: string
   offBannerName: string
+  featuredPool: string[]
+  offBannerPool: string[]
+  fourStarPool: string[]
+  threeStarPool: string[]
   imageUrl: string
   baseFiveRate: number
   softPityStart: number
@@ -70,8 +75,13 @@ const presets: BannerRules[] = [
     id: 'genshin-character',
     game: 'Genshin Impact',
     banner: 'Character Event Wish',
+    bannerKind: 'character',
     featuredName: 'Featured 5-star character',
     offBannerName: 'Standard 5-star character',
+    featuredPool: ['Nahida', 'Furina', 'Yelan', 'Kazuha'],
+    offBannerPool: ['Jean', 'Diluc', 'Mona', 'Keqing', 'Tighnari', 'Dehya', 'Qiqi'],
+    fourStarPool: ['Xingqiu', 'Fischl', 'Bennett', 'Sucrose', 'Diona', 'Rosaria', 'Beidou'],
+    threeStarPool: ['Traveler gear', 'Slingshot', 'Magic Guide', 'Sharpshooter\'s Oath', 'Black Tassel'],
     imageUrl: '',
     baseFiveRate: 0.6,
     softPityStart: 74,
@@ -88,8 +98,13 @@ const presets: BannerRules[] = [
     id: 'star-rail-character',
     game: 'Honkai: Star Rail',
     banner: 'Character Event Warp',
+    bannerKind: 'character',
     featuredName: 'Limited 5-star character',
     offBannerName: 'Standard 5-star character',
+    featuredPool: ['Acheron', 'Kafka', 'Firefly', 'Jingliu'],
+    offBannerPool: ['Himeko', 'Bailu', 'Bronya', 'Welt', 'Yanqing', 'Clara', 'Gepard'],
+    fourStarPool: ['March 7th', 'Dan Heng', 'Asta', 'Pela', 'Sampo', 'Tingyun', 'Xueyi'],
+    threeStarPool: ['Generic light cone', 'Stellar scrap', 'Trailblazer salvage', 'Calibration unit'],
     imageUrl: '',
     baseFiveRate: 0.6,
     softPityStart: 74,
@@ -106,8 +121,13 @@ const presets: BannerRules[] = [
     id: 'zenless-signal',
     game: 'Zenless Zone Zero',
     banner: 'Exclusive Channel',
+    bannerKind: 'character',
     featuredName: 'Exclusive S-rank agent',
     offBannerName: 'Standard S-rank agent',
+    featuredPool: ['Ellen', 'Zhu Yuan', 'Jane Doe', 'Yanagi'],
+    offBannerPool: ['Soldier 11', 'Rina', 'Koleda', 'Lycaon', 'Grace', 'Nekomata', 'Alexandrina'],
+    fourStarPool: ['Billy', 'Anby', 'Nicole', 'Ben', 'Corin', 'Anton', 'Seth'],
+    threeStarPool: ['W-Engine scrap', 'Hollow material', 'Drive disc shard', 'Inter-Knot coupon'],
     imageUrl: '',
     baseFiveRate: 0.6,
     softPityStart: 74,
@@ -124,8 +144,13 @@ const presets: BannerRules[] = [
     id: 'wuwa-convene',
     game: 'Wuthering Waves',
     banner: 'Featured Resonator Convene',
+    bannerKind: 'character',
     featuredName: 'Featured 5-star resonator',
     offBannerName: 'Standard 5-star resonator',
+    featuredPool: ['Jiyan', 'Changli', 'Zhezhi', 'Camellya'],
+    offBannerPool: ['Verina', 'Lingyang', 'Calcharo', 'Encore', 'Jianxin', 'Shorekeeper', 'Encore'],
+    fourStarPool: ['Danjin', 'Sanhua', 'Mortefi', 'Chixia', 'Baizhi', 'Yangyang', 'Taoqi'],
+    threeStarPool: ['Tuner scrap', 'Weapon shell', 'Resonance dust', 'Casket material'],
     imageUrl: '',
     baseFiveRate: 0.8,
     softPityStart: 66,
@@ -144,8 +169,13 @@ const customPreset: BannerRules = {
   id: 'custom',
   game: 'Custom Game',
   banner: 'Custom Banner',
+  bannerKind: 'character',
   featuredName: 'Featured highest rarity',
   offBannerName: 'Off-banner highest rarity',
+  featuredPool: ['Featured unit'],
+  offBannerPool: ['Off-banner unit'],
+  fourStarPool: ['4-star reward'],
+  threeStarPool: ['3-star reward'],
   imageUrl: '',
   baseFiveRate: 1,
   softPityStart: 70,
@@ -168,21 +198,6 @@ const emptyTotals: Totals = {
   longestDry: 0,
   spent: 0,
 }
-
-const fourStarNames = [
-  'Featured 4-star reward',
-  'Premium 4-star reward',
-  'Elite 4-star reward',
-  'Support 4-star reward',
-]
-
-const threeStarNames = [
-  'Common weapon',
-  'Upgrade material',
-  'Archive shard',
-  'Basic reward',
-  'Starter gear',
-]
 
 const percentFormatter = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 2,
@@ -224,7 +239,11 @@ function formatPercent(value: number) {
   return `${percentFormatter.format(value)}%`
 }
 
-function pickRewardName(names: string[]) {
+function pickRewardName(names: string[], fallback: string) {
+  if (names.length === 0) {
+    return fallback
+  }
+
   return names[Math.floor(Math.random() * names.length)]
 }
 
@@ -258,6 +277,11 @@ function handleImageFallback(event: SyntheticEvent<HTMLImageElement>) {
   event.currentTarget.src = '/summon-prism.svg'
 }
 
+function pickBannerFace(rules: BannerRules) {
+  const pool = rules.featuredPool.length > 0 ? rules.featuredPool : [rules.featuredName]
+  return pool[Math.floor(Math.random() * pool.length)]
+}
+
 function App() {
   const [selectedPresetId, setSelectedPresetId] = useState(presets[0].id)
   const [rules, setRules] = useState<BannerRules>(() => copyRules(presets[0]))
@@ -289,6 +313,7 @@ function App() {
   const featuredRate =
     totals.fiveStars > 0 ? formatPercent((totals.featured / totals.fiveStars) * 100) : '-'
   const activeImageUrl = activeRules.imageUrl || '/summon-prism.svg'
+  const activeBannerFace = useMemo(() => pickBannerFace(activeRules), [activeRules])
 
   function resetSession() {
     setPity5(0)
@@ -354,7 +379,9 @@ function App() {
           id: resultId(pullNumber),
           number: pullNumber,
           rarity: 5,
-          name: wonFeatured ? runRules.featuredName : runRules.offBannerName,
+          name: wonFeatured
+            ? pickRewardName(runRules.featuredPool, runRules.featuredName)
+            : pickRewardName(runRules.offBannerPool, runRules.offBannerName),
           featured: wonFeatured,
           pityAt,
           chance: fiveChance,
@@ -387,7 +414,7 @@ function App() {
           id: resultId(pullNumber),
           number: pullNumber,
           rarity: 4,
-          name: pickRewardName(fourStarNames),
+          name: pickRewardName(runRules.fourStarPool, '4-star reward'),
           featured: false,
           pityAt: nextPity4 + 1,
           chance: fourChance,
@@ -402,7 +429,7 @@ function App() {
           id: resultId(pullNumber),
           number: pullNumber,
           rarity: 3,
-          name: pickRewardName(threeStarNames),
+          name: pickRewardName(runRules.threeStarPool, '3-star reward'),
           featured: false,
           pityAt: 0,
           chance: 0,
@@ -508,12 +535,13 @@ function App() {
         </section>
 
         <section className="panel summon-panel" aria-labelledby="summon-heading">
-          <div className="summon-stage">
-            <div className="summon-art-wrap">
-              <img
-                className="summon-art"
-                src={activeImageUrl}
-                alt=""
+            <div className="summon-stage">
+              <div className="summon-art-wrap">
+                <div className="banner-badge">{activeRules.bannerKind}</div>
+                <img
+                  className="summon-art"
+                  src={activeImageUrl}
+                  alt=""
                 data-character={activeRules.imageUrl ? 'true' : 'false'}
                 onError={handleImageFallback}
               />
@@ -522,6 +550,7 @@ function App() {
             <div className="summon-copy">
               <p className="eyebrow">{activeRules.game}</p>
               <h2 id="summon-heading">{activeRules.banner}</h2>
+              <p className="banner-face">Spotlight: {activeBannerFace}</p>
               <div className="target-line">
                 <Target size={18} aria-hidden="true" />
                 <span>{activeRules.featuredName}</span>
@@ -658,6 +687,19 @@ function App() {
                 value={rules.offBannerName}
                 onChange={(event) => updateRule('offBannerName', event.target.value)}
               />
+            </label>
+
+            <label className="field wide">
+              <span>Banner Type</span>
+              <select
+                value={rules.bannerKind}
+                onChange={(event) =>
+                  updateRule('bannerKind', event.target.value === 'weapon' ? 'weapon' : 'character')
+                }
+              >
+                <option value="character">Character</option>
+                <option value="weapon">Weapon</option>
+              </select>
             </label>
 
             <label className="field wide">

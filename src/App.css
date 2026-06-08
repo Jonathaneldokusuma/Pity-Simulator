@@ -246,6 +246,7 @@ input:focus-visible {
 }
 
 .summon-art-wrap {
+  position: relative;
   aspect-ratio: 1;
   width: min(210px, 100%);
   display: grid;
@@ -254,6 +255,21 @@ input:focus-visible {
   border: 1px solid rgba(32, 36, 43, 0.1);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.64);
+}
+
+.banner-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(32, 36, 43, 0.88);
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .summon-art {
@@ -279,6 +295,13 @@ input:focus-visible {
   font-size: 2rem;
   line-height: 1.08;
   overflow-wrap: anywhere;
+}
+
+.banner-face {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 800;
 }
 
 .target-line {
@@ -450,8 +473,30 @@ input {
   font-weight: 750;
 }
 
+select {
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: var(--ink);
+  background: #ffffff;
+  font-weight: 750;
+}
+
 input[type='color'] {
   padding: 4px;
+}
+
+input[type='text'],
+input[type='url'],
+input[type='number'] {
+  appearance: none;
+}
+
+input[readonly] {
+  background: #f8fafc;
+  color: var(--muted);
 }
 
 .color-field input {

@@ -6,6 +6,7 @@ A Vercel-ready gacha pity simulator built with React, TypeScript, and Vite.
 
 - Game presets for popular gacha-style banners
 - Fully editable custom banner rules for any game
+- Character image URL field for banner art and 5-star result cards
 - 1 pull, 10 pulls, and pull-until-featured simulation
 - 5-star pity, 4-star pity, soft pity, hard pity, and guarantee tracking
 - Session stats, currency spend, latest results, and pull history

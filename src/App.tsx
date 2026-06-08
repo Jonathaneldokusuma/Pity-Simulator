@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import type { CSSProperties } from 'react'
+import type { CSSProperties, SyntheticEvent } from 'react'
 import {
   BarChart3,
   Copy,
@@ -21,6 +21,7 @@ type BannerRules = {
   banner: string
   featuredName: string
   offBannerName: string
+  imageUrl: string
   baseFiveRate: number
   softPityStart: number
   hardPity: number
@@ -42,6 +43,7 @@ type PullResult = {
   pityAt: number
   chance: number
   guaranteed: boolean
+  imageUrl: string
 }
 
 type Totals = {
@@ -70,6 +72,7 @@ const presets: BannerRules[] = [
     banner: 'Character Event Wish',
     featuredName: 'Featured 5-star character',
     offBannerName: 'Standard 5-star character',
+    imageUrl: '',
     baseFiveRate: 0.6,
     softPityStart: 74,
     hardPity: 90,
@@ -87,6 +90,7 @@ const presets: BannerRules[] = [
     banner: 'Character Event Warp',
     featuredName: 'Limited 5-star character',
     offBannerName: 'Standard 5-star character',
+    imageUrl: '',
     baseFiveRate: 0.6,
     softPityStart: 74,
     hardPity: 90,
@@ -104,6 +108,7 @@ const presets: BannerRules[] = [
     banner: 'Exclusive Channel',
     featuredName: 'Exclusive S-rank agent',
     offBannerName: 'Standard S-rank agent',
+    imageUrl: '',
     baseFiveRate: 0.6,
     softPityStart: 74,
     hardPity: 90,
@@ -121,6 +126,7 @@ const presets: BannerRules[] = [
     banner: 'Featured Resonator Convene',
     featuredName: 'Featured 5-star resonator',
     offBannerName: 'Standard 5-star resonator',
+    imageUrl: '',
     baseFiveRate: 0.8,
     softPityStart: 66,
     hardPity: 80,
@@ -140,6 +146,7 @@ const customPreset: BannerRules = {
   banner: 'Custom Banner',
   featuredName: 'Featured highest rarity',
   offBannerName: 'Off-banner highest rarity',
+  imageUrl: '',
   baseFiveRate: 1,
   softPityStart: 70,
   hardPity: 90,
@@ -201,6 +208,7 @@ function normalizeRules(rules: BannerRules): BannerRules {
     banner: rules.banner.trim() || 'Custom Banner',
     featuredName: rules.featuredName.trim() || 'Featured highest rarity',
     offBannerName: rules.offBannerName.trim() || 'Off-banner highest rarity',
+    imageUrl: rules.imageUrl.trim(),
     baseFiveRate: clamp(rules.baseFiveRate, 0, 100),
     softPityStart,
     hardPity,
@@ -245,6 +253,11 @@ function resultId(pullNumber: number) {
   return `${pullNumber}-${Math.random().toString(36).slice(2)}`
 }
 
+function handleImageFallback(event: SyntheticEvent<HTMLImageElement>) {
+  event.currentTarget.dataset.character = 'false'
+  event.currentTarget.src = '/summon-prism.svg'
+}
+
 function App() {
   const [selectedPresetId, setSelectedPresetId] = useState(presets[0].id)
   const [rules, setRules] = useState<BannerRules>(() => copyRules(presets[0]))
@@ -275,6 +288,7 @@ function App() {
     totals.fiveStars > 0 ? (totals.pulls / totals.fiveStars).toFixed(1) : '-'
   const featuredRate =
     totals.fiveStars > 0 ? formatPercent((totals.featured / totals.fiveStars) * 100) : '-'
+  const activeImageUrl = activeRules.imageUrl || '/summon-prism.svg'
 
   function resetSession() {
     setPity5(0)
@@ -345,6 +359,7 @@ function App() {
           pityAt,
           chance: fiveChance,
           guaranteed: wasGuaranteed,
+          imageUrl: runRules.imageUrl,
         })
 
         nextTotals.fiveStars += 1
@@ -377,6 +392,7 @@ function App() {
           pityAt: nextPity4 + 1,
           chance: fourChance,
           guaranteed: false,
+          imageUrl: '',
         })
 
         nextTotals.fourStars += 1
@@ -391,6 +407,7 @@ function App() {
           pityAt: 0,
           chance: 0,
           guaranteed: false,
+          imageUrl: '',
         })
 
         nextPity4 += 1
@@ -493,7 +510,13 @@ function App() {
         <section className="panel summon-panel" aria-labelledby="summon-heading">
           <div className="summon-stage">
             <div className="summon-art-wrap">
-              <img className="summon-art" src="/summon-prism.svg" alt="" />
+              <img
+                className="summon-art"
+                src={activeImageUrl}
+                alt=""
+                data-character={activeRules.imageUrl ? 'true' : 'false'}
+                onError={handleImageFallback}
+              />
             </div>
 
             <div className="summon-copy">
@@ -637,6 +660,16 @@ function App() {
               />
             </label>
 
+            <label className="field wide">
+              <span>Character Image URL</span>
+              <input
+                type="url"
+                placeholder="https://..."
+                value={rules.imageUrl}
+                onChange={(event) => updateRule('imageUrl', event.target.value)}
+              />
+            </label>
+
             <label className="field">
               <span>5-star base %</span>
               <input
@@ -763,9 +796,19 @@ function App() {
                 <li
                   className={`result-card rarity-${result.rarity} ${
                     result.featured ? 'featured' : ''
-                  }`}
+                  } ${result.imageUrl ? 'has-image' : ''}`}
                   key={result.id}
                 >
+                  {result.imageUrl && (
+                    <img
+                      className="result-image"
+                      src={result.imageUrl}
+                      alt=""
+                      onError={(event) => {
+                        event.currentTarget.hidden = true
+                      }}
+                    />
+                  )}
                   <span className="rarity-label">{result.rarity}-star</span>
                   <strong>{result.name}</strong>
                   <small>

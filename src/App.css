@@ -304,6 +304,73 @@ input:focus-visible {
   font-weight: 800;
 }
 
+.banner-rail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 12px;
+}
+
+.banner-pill {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--rule-accent) 18%, #ffffff);
+  color: var(--ink);
+  font-size: 0.74rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.banner-pill.weapon {
+  background: rgba(231, 171, 41, 0.22);
+}
+
+.banner-pill.subtle {
+  background: #edf2f7;
+  color: var(--muted);
+}
+
+.banner-pools {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.66);
+}
+
+.pool-chip-group strong {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  padding: 5px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: #ffffff;
+  color: var(--ink);
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.chip.featured {
+  border-color: color-mix(in srgb, var(--rule-accent) 35%, var(--line));
+  background: color-mix(in srgb, var(--rule-accent) 12%, #ffffff);
+}
+
 .target-line {
   min-height: 42px;
   padding: 10px 12px;

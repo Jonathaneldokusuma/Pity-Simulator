@@ -314,6 +314,8 @@ function App() {
     totals.fiveStars > 0 ? formatPercent((totals.featured / totals.fiveStars) * 100) : '-'
   const activeImageUrl = activeRules.imageUrl || '/summon-prism.svg'
   const activeBannerFace = useMemo(() => pickBannerFace(activeRules), [activeRules])
+  const activeFeaturedPool = activeRules.featuredPool.length > 0 ? activeRules.featuredPool : [activeRules.featuredName]
+  const activeOffBannerPool = activeRules.offBannerPool.length > 0 ? activeRules.offBannerPool : [activeRules.offBannerName]
 
   function resetSession() {
     setPity5(0)
@@ -550,10 +552,38 @@ function App() {
             <div className="summon-copy">
               <p className="eyebrow">{activeRules.game}</p>
               <h2 id="summon-heading">{activeRules.banner}</h2>
+              <div className="banner-rail">
+                <span className={`banner-pill ${activeRules.bannerKind}`}>{activeRules.bannerKind}</span>
+                <span className="banner-pill subtle">Featured pool: {activeFeaturedPool.length}</span>
+                <span className="banner-pill subtle">Off-banner pool: {activeOffBannerPool.length}</span>
+              </div>
               <p className="banner-face">Spotlight: {activeBannerFace}</p>
               <div className="target-line">
                 <Target size={18} aria-hidden="true" />
                 <span>{activeRules.featuredName}</span>
+              </div>
+
+              <div className="banner-pools" aria-label="Banner pools">
+                <section className="pool-chip-group">
+                  <strong>Featured</strong>
+                  <div className="chip-row">
+                    {activeFeaturedPool.slice(0, 6).map((item) => (
+                      <span key={item} className="chip featured">
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </section>
+                <section className="pool-chip-group">
+                  <strong>Off-banner</strong>
+                  <div className="chip-row">
+                    {activeOffBannerPool.slice(0, 6).map((item) => (
+                      <span key={item} className="chip">
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </section>
               </div>
             </div>
           </div>
@@ -700,6 +730,70 @@ function App() {
                 <option value="character">Character</option>
                 <option value="weapon">Weapon</option>
               </select>
+            </label>
+
+            <label className="field wide">
+              <span>Featured Pool</span>
+              <input
+                value={rules.featuredPool.join(', ')}
+                onChange={(event) =>
+                  updateRule(
+                    'featuredPool',
+                    event.target.value
+                      .split(',')
+                      .map((item) => item.trim())
+                      .filter(Boolean),
+                  )
+                }
+              />
+            </label>
+
+            <label className="field wide">
+              <span>Off-banner Pool</span>
+              <input
+                value={rules.offBannerPool.join(', ')}
+                onChange={(event) =>
+                  updateRule(
+                    'offBannerPool',
+                    event.target.value
+                      .split(',')
+                      .map((item) => item.trim())
+                      .filter(Boolean),
+                  )
+                }
+              />
+            </label>
+
+            <label className="field wide">
+              <span>4-star Pool</span>
+              <input
+                value={rules.fourStarPool.join(', ')}
+                onChange={(event) =>
+                  updateRule(
+                    'fourStarPool',
+                    event.target.value
+                      .split(',')
+                      .map((item) => item.trim())
+                      .filter(Boolean),
+                  )
+                }
+              />
+            </label>
+
+            <label className="field wide">
+              <span>3-star Pool</span>
+              <input
+                value={rules.threeStarPool.join(', ')}
+                onChange={(event) =>
+                  updateRule(
+                    'threeStarPool',
+                    event.target.value
+                      .split(',')
+                      .map((item) => item.trim())
+                      .filter(Boolean),
+                  )
+                }
+              />
             </label>
 
             <label className="field wide">

@@ -4,7 +4,10 @@ import {
   BarChart3,
   Copy,
   Crown,
+  Database,
   Dice5,
+  ExternalLink,
+  LoaderCircle,
   RotateCcw,
   Settings2,
   Sparkles,
@@ -37,6 +40,8 @@ type BannerRules = {
   currencyName: string
   pullCost: number
   accent: string
+  sourceName: string
+  sourceUrl: string
 }
 
 const zzzCharacterAsset =
@@ -96,6 +101,8 @@ const presets: BannerRules[] = [
     currencyName: 'Primogem',
     pullCost: 160,
     accent: '#2f80ed',
+    sourceName: 'genshin.dev API + genshin-db',
+    sourceUrl: 'https://genshin.dev/',
   },
   {
     id: 'star-rail-character',
@@ -119,6 +126,8 @@ const presets: BannerRules[] = [
     currencyName: 'Stellar Jade',
     pullCost: 160,
     accent: '#c8553d',
+    sourceName: 'StarRailRes',
+    sourceUrl: 'https://github.com/Mar-7th/StarRailRes',
   },
   {
     id: 'zenless-signal',
@@ -142,6 +151,8 @@ const presets: BannerRules[] = [
     currencyName: 'Polychrome',
     pullCost: 160,
     accent: '#ffb703',
+    sourceName: 'Dimbreath ZenlessData',
+    sourceUrl: 'https://github.com/Nagano-original-fireworks-store/Dimbreath-ZenlessData',
   },
   {
     id: 'wuwa-convene',
@@ -165,6 +176,8 @@ const presets: BannerRules[] = [
     currencyName: 'Astrite',
     pullCost: 160,
     accent: '#0d9488',
+    sourceName: 'Resonance REST API',
+    sourceUrl: 'https://github.com/resonance-rest/api',
   },
 ]
 
@@ -190,6 +203,8 @@ const customPreset: BannerRules = {
   currencyName: 'Currency',
   pullCost: 1,
   accent: '#7c3aed',
+  sourceName: 'Manual rules',
+  sourceUrl: 'https://github.com/Jonathaneldokusuma/Pity-Simulator',
 }
 
 const emptyTotals: Totals = {
@@ -285,6 +300,17 @@ function pickBannerFace(rules: BannerRules) {
   return pool[Math.floor(Math.random() * pool.length)]
 }
 
+function toGenshinSlug(name: string) {
+  return name.toLowerCase().replaceAll(' ', '-').replaceAll("'", '')
+}
+
+function displaySourceName(name: string) {
+  return name
+    .split('-')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ')
+}
+
 function App() {
   const [selectedPresetId, setSelectedPresetId] = useState(presets[0].id)
   const [rules, setRules] = useState<BannerRules>(() => copyRules(presets[0]))
@@ -295,6 +321,8 @@ function App() {
   const [lastBatch, setLastBatch] = useState<PullResult[]>([])
   const [history, setHistory] = useState<PullResult[]>([])
   const [copied, setCopied] = useState(false)
+  const [sourceState, setSourceState] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle')
+  const [sourceMessage, setSourceMessage] = useState('')
 
   const activeRules = useMemo(() => normalizeRules(rules), [rules])
   const nextFiveChance = useMemo(
@@ -333,12 +361,52 @@ function App() {
     setSelectedPresetId(preset.id)
     setRules(copyRules(preset))
     resetSession()
+    setSourceState('idle')
+    setSourceMessage('')
   }
 
   function selectCustomPreset() {
     setSelectedPresetId('custom')
     setRules((current) => (current.id === 'custom' ? current : copyRules(customPreset)))
     resetSession()
+    setSourceState('idle')
+    setSourceMessage('')
+  }
+
+  async function loadLiveSource() {
+    if (activeRules.id !== 'genshin-character') {
+      setSourceMessage('This source is linked for reference; live roster loading is available for Genshin first.')
+      setSourceState('error')
+      return
+    }
+
+    setSourceState('loading')
+    setSourceMessage('Loading the current Genshin character catalog...')
+
+    try {
+      const response = await fetch('https://api.genshin.dev/characters')
+      if (!response.ok) throw new Error('Source request failed')
+      const payload: unknown = await response.json()
+      const names = Array.isArray(payload)
+        ? payload
+            .filter((item): item is string => typeof item === 'string')
+            .map(displaySourceName)
+        : []
+
+      if (names.length === 0) throw new Error('No characters returned')
+
+      setRules((current) => ({
+        ...current,
+        featuredPool: names.slice(0, 24),
+        fourStarPool: names.slice(24, 48),
+        imageUrl: `https://api.genshin.dev/characters/${toGenshinSlug(names[0])}/portrait`,
+      }))
+      setSourceState('loaded')
+      setSourceMessage(`Loaded ${names.length} characters from genshin.dev. Choose the banner pools below.`)
+    } catch {
+      setSourceState('error')
+      setSourceMessage('Could not reach the API. The built-in preset is still available.')
+    }
   }
 
   function updateRule<K extends keyof BannerRules>(key: K, value: BannerRules[K]) {
@@ -503,6 +571,28 @@ function App() {
           <div className="panel-header">
             <Ticket size={20} aria-hidden="true" />
             <h2 id="preset-heading">Game Preset</h2>
+          </div>
+
+          <div className="source-card">
+            <div className="source-card-heading">
+              <Database size={18} aria-hidden="true" />
+              <span>
+                <strong>Real data source</strong>
+                <small>{activeRules.sourceName}</small>
+              </span>
+            </div>
+            <a href={activeRules.sourceUrl} target="_blank" rel="noreferrer">
+              View source <ExternalLink size={14} aria-hidden="true" />
+            </a>
+            <button className="button source-button" type="button" onClick={loadLiveSource} disabled={sourceState === 'loading'}>
+              {sourceState === 'loading' ? <LoaderCircle className="spin" size={16} aria-hidden="true" /> : <Database size={16} aria-hidden="true" />}
+              {sourceState === 'loading'
+                ? 'Loading...'
+                : activeRules.id === 'genshin-character'
+                  ? 'Load live roster'
+                  : 'Source linked'}
+            </button>
+            {sourceMessage && <small className={`source-message ${sourceState}`}>{sourceMessage}</small>}
           </div>
 
           <div className="preset-grid">

@@ -1,10 +1,10 @@
 :root {
-  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
-  font-size: 16px;
+  font-family: "Courier New", ui-monospace, monospace;
+  font-size: 14px;
   line-height: 1.5;
   font-weight: 400;
   color: #20242b;
-  background: #eef2f4;
+  background: #080d12;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -17,7 +17,7 @@
 
 html {
   min-width: 320px;
-  background: #eef2f4;
+  background: #080d12;
 }
 
 body {

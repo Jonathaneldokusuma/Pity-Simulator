@@ -44,7 +44,7 @@ type BannerRules = {
   sourceUrl: string
 }
 
-const defaultCharacterAsset = 'https://api.genshin.dev/characters/kazuha/portrait'
+const defaultCharacterAsset = 'https://raw.githubusercontent.com/dromzeh/genshin-splash-art/main/kazuha.png'
 
 type PullResult = {
   id: string
@@ -383,9 +383,23 @@ function App() {
     setSourceMessage('Loading the current Genshin character catalog...')
 
     try {
-      const response = await fetch('https://api.genshin.dev/characters')
-      if (!response.ok) throw new Error('Source request failed')
-      const payload: unknown = await response.json()
+      const sourceUrls = [
+        'https://genshin.jmp.blue/characters',
+        'https://api.genshin.dev/characters',
+      ]
+      let payload: unknown
+
+      for (const sourceUrl of sourceUrls) {
+        try {
+          const response = await fetch(sourceUrl)
+          if (!response.ok) continue
+          payload = await response.json()
+          break
+        } catch {
+          // Try the next public mirror.
+        }
+      }
+
       const names = Array.isArray(payload)
         ? payload
             .filter((item): item is string => typeof item === 'string')
@@ -398,7 +412,7 @@ function App() {
         ...current,
         featuredPool: names.slice(0, 24),
         fourStarPool: names.slice(24, 48),
-        imageUrl: `https://api.genshin.dev/characters/${toGenshinSlug(names[0])}/portrait`,
+        imageUrl: `https://raw.githubusercontent.com/dromzeh/genshin-splash-art/main/${toGenshinSlug(names[0])}.png`,
       }))
       setSourceState('loaded')
       setSourceMessage(`Loaded ${names.length} characters from genshin.dev. Choose the banner pools below.`)

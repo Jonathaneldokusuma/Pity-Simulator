@@ -918,3 +918,95 @@ td {
     grid-column: auto;
   }
 }
+
+/* Calm product theme: keep the simulator focused on the pull controls. */
+.app-shell {
+  --ink: #17252b;
+  --muted: #66777d;
+  --line: #dce5e7;
+  background: #eef2f4;
+}
+
+.app-shell::before {
+  opacity: 0.28;
+  background-image: radial-gradient(rgba(23, 37, 43, 0.08) 1px, transparent 1px);
+}
+
+h1 {
+  color: var(--ink);
+}
+
+.brand-mark {
+  border-color: #cbd9dc;
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(30, 53, 61, 0.1);
+}
+
+.panel {
+  border-color: var(--line);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 14px 34px rgba(30, 53, 61, 0.08);
+}
+
+.source-card,
+.preset-option,
+.odds-card,
+.stat-tile,
+input,
+select {
+  background: #ffffff;
+}
+
+.source-card {
+  border-color: color-mix(in srgb, var(--rule-accent) 24%, var(--line));
+  background: color-mix(in srgb, var(--rule-accent) 5%, #ffffff);
+}
+
+.summon-stage {
+  color: #f2f7f8;
+  background:
+    radial-gradient(circle at 12% 10%, color-mix(in srgb, var(--rule-accent) 36%, transparent), transparent 38%),
+    linear-gradient(135deg, #263940 0%, #1c2a31 68%, #172228 100%);
+}
+
+.summon-copy h2,
+.target-line {
+  color: #f2f7f8;
+}
+
+.banner-face {
+  color: rgba(242, 247, 248, 0.68);
+}
+
+.banner-pools {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.pool-chip-group strong {
+  color: rgba(242, 247, 248, 0.58);
+}
+
+.chip {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.1);
+  color: #f2f7f8;
+}
+
+.chip.featured {
+  border-color: color-mix(in srgb, var(--rule-accent) 70%, #ffffff);
+  background: color-mix(in srgb, var(--rule-accent) 35%, transparent);
+}
+
+.pull-actions {
+  background: #ffffff;
+}
+
+.spent-box {
+  color: #17383b;
+  background: #d6ece8;
+}
+
+.spent-box small {
+  color: #557274;
+}

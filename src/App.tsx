@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { CSSProperties, SyntheticEvent } from 'react'
 import {
   BarChart3,
@@ -58,6 +58,7 @@ type GenshinDbCharacter = {
   version?: string
   images?: {
     hoyowiki_icon?: string
+    icon?: string
   }
 }
 
@@ -241,6 +242,12 @@ const bannerChoices: Record<string, BannerChoice[]> = {
   })),
 }
 
+function sortVersions(first: string, second: string) {
+  const firstParts = first.split('.').map(Number)
+  const secondParts = second.split('.').map(Number)
+  return (secondParts[0] || 0) - (firstParts[0] || 0) || (secondParts[1] || 0) - (firstParts[1] || 0)
+}
+
 const emptyTotals: Totals = {
   pulls: 0,
   fiveStars: 0,
@@ -347,6 +354,8 @@ function App() {
   const [selectedBannerId, setSelectedBannerId] = useState('nahida')
   const [selectedBannerVersion, setSelectedBannerVersion] = useState('All versions')
   const [liveGenshinBanners, setLiveGenshinBanners] = useState(bannerChoices['genshin-character'])
+  const [liveGenshinWeapons, setLiveGenshinWeapons] = useState<BannerChoice[]>([])
+  const [collectionKind, setCollectionKind] = useState<'character' | 'weapon'>('character')
   const [sourceState, setSourceState] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle')
   const [sourceMessage, setSourceMessage] = useState('')
 
@@ -374,9 +383,9 @@ function App() {
   const activeFeaturedPool = activeRules.featuredPool.length > 0 ? activeRules.featuredPool : [activeRules.featuredName]
   const activeOffBannerPool = activeRules.offBannerPool.length > 0 ? activeRules.offBannerPool : [activeRules.offBannerName]
   const activeBannerChoices = activeRules.id === 'genshin-character'
-    ? liveGenshinBanners
+    ? collectionKind === 'character' ? liveGenshinBanners : liveGenshinWeapons
     : bannerChoices[activeRules.id] ?? []
-  const bannerVersions = ['All versions', ...new Set(activeBannerChoices.map((choice) => choice.version))]
+  const bannerVersions = ['All versions', ...Array.from(new Set(activeBannerChoices.map((choice) => choice.version))).sort(sortVersions)]
   const visibleBannerChoices = selectedBannerVersion === 'All versions'
     ? activeBannerChoices
     : activeBannerChoices.filter((choice) => choice.version === selectedBannerVersion)
@@ -398,6 +407,7 @@ function App() {
     setSourceMessage('')
     setSelectedBannerId(bannerChoices[preset.id]?.[0]?.id ?? '')
     setSelectedBannerVersion('All versions')
+    setCollectionKind('character')
   }
 
   function selectCustomPreset() {
@@ -413,12 +423,19 @@ function App() {
     setRules((current) => ({
       ...current,
       banner: `${choice.name} Banner`,
+      bannerKind: collectionKind,
       featuredName: choice.featuredName,
       featuredPool: [choice.featuredName],
       imageUrl: choice.imageUrl,
     }))
     resetSession()
   }
+
+  useEffect(() => {
+    void loadLiveSource()
+    // The loader is intentionally run once when the simulator opens.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   async function loadLiveSource() {
     if (activeRules.id !== 'genshin-character') {
@@ -431,16 +448,23 @@ function App() {
     setSourceMessage('Loading the current Genshin character catalog...')
 
     try {
-      const response = await fetch(
-        'https://genshin-db-api.vercel.app/api/v5/characters?query=names&matchCategories=true&verboseCategories=true&resultLanguage=English',
-      )
-      if (!response.ok) throw new Error('Source request failed')
-      const payload: unknown = await response.json()
-      const records = Array.isArray(payload)
-        ? payload.filter((item): item is GenshinDbCharacter => typeof item === 'object' && item !== null)
-        : []
-      const fiveStarBanners = records
-        .filter((item) => String(item.rarity) === '5' && typeof item.name === 'string')
+      async function fetchCollection(folder: 'characters' | 'weapons') {
+        const response = await fetch(
+          `https://genshin-db-api.vercel.app/api/v5/${folder}?query=names&matchCategories=true&verboseCategories=true&resultLanguage=English`,
+        )
+        if (!response.ok) throw new Error(`${folder} request failed`)
+        const payload: unknown = await response.json()
+        return Array.isArray(payload)
+          ? payload.filter((item): item is GenshinDbCharacter => typeof item === 'object' && item !== null)
+          : []
+      }
+
+      const [characterRecords, weaponRecords] = await Promise.all([
+        fetchCollection('characters'),
+        fetchCollection('weapons'),
+      ])
+      const toBannerChoices = (records: GenshinDbCharacter[]) => records
+        .filter((item) => typeof item.name === 'string')
         .map((item) => {
           const name = item.name as string
           return {
@@ -448,24 +472,27 @@ function App() {
             name,
             featuredName: name,
             version: item.version || 'Catalog',
-            imageUrl: item.images?.hoyowiki_icon || defaultCharacterAsset,
+            imageUrl: item.images?.hoyowiki_icon || item.images?.icon || defaultCharacterAsset,
           }
         })
+      const characterBanners = toBannerChoices(characterRecords)
+      const weaponBanners = toBannerChoices(weaponRecords)
 
-      if (fiveStarBanners.length === 0) throw new Error('No 5-star characters returned')
+      if (characterBanners.length === 0 || weaponBanners.length === 0) throw new Error('Empty catalog returned')
 
       setRules((current) => ({
         ...current,
-        banner: `${fiveStarBanners[0].name} Banner`,
-        featuredName: fiveStarBanners[0].featuredName,
-        featuredPool: [fiveStarBanners[0].featuredName],
-        imageUrl: fiveStarBanners[0].imageUrl,
-        fourStarPool: fiveStarBanners.map((choice) => choice.name),
+        banner: `${characterBanners[0].name} Banner`,
+        featuredName: characterBanners[0].featuredName,
+        featuredPool: [characterBanners[0].featuredName],
+        imageUrl: characterBanners[0].imageUrl,
+        fourStarPool: characterBanners.map((choice) => choice.name),
       }))
-      setLiveGenshinBanners(fiveStarBanners)
-      setSelectedBannerId(fiveStarBanners[0].id)
+      setLiveGenshinBanners(characterBanners)
+      setLiveGenshinWeapons(weaponBanners)
+      setSelectedBannerId(characterBanners[0].id)
       setSourceState('loaded')
-      setSourceMessage(`Loaded ${fiveStarBanners.length} 5-star characters from genshin-db. Choose one banner.`)
+      setSourceMessage(`Loaded ${characterBanners.length} characters and ${weaponBanners.length} weapons from genshin-db.`)
     } catch {
       setSourceState('error')
       setSourceMessage('Could not reach the API. The built-in preset is still available.')
@@ -693,10 +720,32 @@ function App() {
         </section>
 
         <section className="panel summon-panel" aria-labelledby="summon-heading">
-          {activeBannerChoices.length > 0 && (
+          {activeRules.id === 'genshin-character' && (liveGenshinBanners.length > 0 || liveGenshinWeapons.length > 0) && (
             <div className="banner-picker" aria-label="Choose a banner">
               <div className="banner-picker-heading">
                 <span className="eyebrow">Choose banner</span>
+                <div className="collection-toggle" role="tablist" aria-label="Collection type">
+                  <button
+                    className={collectionKind === 'character' ? 'active' : ''}
+                    type="button"
+                    onClick={() => {
+                      setCollectionKind('character')
+                      setSelectedBannerVersion('All versions')
+                    }}
+                  >
+                    Characters
+                  </button>
+                  <button
+                    className={collectionKind === 'weapon' ? 'active' : ''}
+                    type="button"
+                    onClick={() => {
+                      setCollectionKind('weapon')
+                      setSelectedBannerVersion('All versions')
+                    }}
+                  >
+                    Weapons
+                  </button>
+                </div>
                 <label>
                   <span>Version</span>
                   <select value={selectedBannerVersion} onChange={(event) => setSelectedBannerVersion(event.target.value)}>
@@ -714,8 +763,11 @@ function App() {
                   >
                     <span>{choice.name}</span>
                     <small>{selectedBannerId === choice.id ? 'Selected' : `Version ${choice.version}`}</small>
-                  </button>
+                    </button>
                 ))}
+                {visibleBannerChoices.length === 0 && (
+                  <p className="banner-empty">No entries for this version.</p>
+                )}
               </div>
             </div>
           )}

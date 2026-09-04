@@ -1045,6 +1045,33 @@ select {
   text-transform: uppercase;
 }
 
+.collection-toggle {
+  display: inline-flex;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.collection-toggle button {
+  min-height: 25px;
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  color: var(--muted);
+  background: #0e1920;
+  font: inherit;
+  font-size: 0.62rem;
+  font-weight: 850;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.collection-toggle button.active {
+  border-color: var(--teal);
+  color: #071418;
+  background: var(--teal);
+}
+
 .banner-picker-heading select {
   min-height: 32px;
   width: auto;
@@ -1118,6 +1145,10 @@ select {
 
   .banner-choice-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .collection-toggle {
+    margin-left: 0;
   }
 }
 

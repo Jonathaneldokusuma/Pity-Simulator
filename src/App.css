@@ -1429,10 +1429,14 @@ select {
   border-radius: 2px;
   background: #14232b;
   box-shadow: none;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
 }
 
 .summon-art {
-  width: 100%;
+  width: 50%;
+  min-width: 0;
   height: 100%;
   object-fit: contain;
 }

@@ -53,6 +53,7 @@ type BannerChoice = {
   phase?: 1 | 2
   featuredFourStars: string[]
   featuredNames?: string[]
+  imageUrls?: string[]
 }
 
 type GenshinDbCharacter = {
@@ -65,7 +66,7 @@ type GenshinDbCharacter = {
   }
 }
 
-const defaultCharacterAsset = 'https://raw.githubusercontent.com/dromzeh/genshin-splash-art/main/kazuha.png'
+const defaultCharacterAsset = '/summon-prism.svg'
 
 type PullResult = {
   id: string
@@ -227,30 +228,36 @@ const customPreset: BannerRules = {
   sourceUrl: 'https://github.com/Jonathaneldokusuma/Pity-Simulator',
 }
 
+const genshinBanner = (id: string, version: string, phase: 1 | 2, names: string[], fourStars: string[]): BannerChoice => ({
+  id, name: names.join(' + '), featuredName: names[0], featuredNames: names,
+  version, phase, featuredFourStars: fourStars, imageUrl: defaultCharacterAsset,
+  imageUrls: names.map(() => defaultCharacterAsset),
+})
+
+const genshinCharacterBanners: BannerChoice[] = [
+  genshinBanner('6-7-p1', '6.7', 1, ['Sandrone', 'Citlali'], ['Beidou', 'Freminet', 'Diona']),
+  genshinBanner('6-7-p2', '6.7', 2, ['Columbina', 'Raiden Shogun'], ['Jahoda', 'Ororon', 'Sethos']),
+  genshinBanner('6-6-p1', '6.6', 1, ['Nicole', 'Durin'], ['Fischl', 'Prune', 'Razor']),
+  genshinBanner('6-6-p2', '6.6', 2, ['Lohen', 'Mavuika'], ['Bennett', 'Xiangling', 'Mika']),
+  genshinBanner('6-5-p1', '6.5', 1, ['Linnea', 'Chasca'], ['Illuga', 'Aino', 'Noelle']),
+  genshinBanner('6-5-p2', '6.5', 2, ['Nefer', 'Lauma'], ['Xingqiu', 'Kirara', 'Jahoda']),
+  genshinBanner('6-4-p1', '6.4', 1, ['Varka', 'Flins'], ['Bennett', 'Xiangling', 'Sucrose']),
+  genshinBanner('6-4-p2', '6.4', 2, ['Skirk', 'Escoffier'], ['Dahlia', 'Candace', 'Charlotte']),
+  genshinBanner('6-3-p1', '6.3', 1, ['Columbina', 'Ineffa'], ['Fischl', 'Sethos', 'Ifa']),
+  genshinBanner('6-3-p2', '6.3', 2, ['Zibai', 'Neuvillette'], ['Illuga', 'Aino', 'Gorou']),
+  genshinBanner('6-2-p1', '6.2', 1, ['Durin', 'Venti'], ['Jahoda', 'Bennett', 'Faruzan']),
+  genshinBanner('6-2-p2', '6.2', 2, ['Varesa', 'Xilonen'], ['Iansan', 'Chevreuse', 'Gaming']),
+  genshinBanner('6-1-p1', '6.1', 1, ['Nefer', 'Furina'], ['Xingqiu', 'Collei', 'Yaoyao']),
+  genshinBanner('6-1-p2', '6.1', 2, ['Arlecchino', 'Zhongli'], ['Lan Yan', 'Rosaria', 'Yun Jin']),
+  genshinBanner('5-0-p1', '5.0', 1, ['Mualani', 'Kazuha'], ['Kachina', 'Xinyan', 'Bennett']),
+  genshinBanner('5-0-p2', '5.0', 2, ['Kinich', 'Raiden Shogun'], ['Thoma', 'Kujou Sara', 'Chevreuse']),
+  genshinBanner('4-3-p2', '4.3', 2, ['Raiden Shogun', 'Yoimiya'], ['Chevreuse', 'Kujou Sara', 'Bennett']),
+  genshinBanner('2-5-p2', '2.5', 2, ['Raiden Shogun', 'Sangonomiya Kokomi'], ['Bennett', 'Xinyan', 'Kujou Sara']),
+  genshinBanner('2-1-p1', '2.1', 1, ['Raiden Shogun'], ['Kujou Sara', 'Xiangling', 'Sucrose']),
+]
+
 const bannerChoices: Record<string, BannerChoice[]> = {
-  'genshin-character': [
-    { id: 'sandrone-6-7', name: 'Sandrone', featuredName: 'Sandrone', version: '6.7', phase: 1, featuredFourStars: ['Beidou', 'Freminet', 'Diona'], imageUrl: defaultCharacterAsset },
-    { id: 'citlali-6-7', name: 'Citlali', featuredName: 'Citlali', version: '6.7', phase: 1, featuredFourStars: ['Beidou', 'Freminet', 'Diona'], imageUrl: defaultCharacterAsset },
-    { id: 'columbina-6-7', name: 'Columbina', featuredName: 'Columbina', version: '6.7', phase: 2, featuredFourStars: ['Jahoda', 'Ororon', 'Sethos'], imageUrl: defaultCharacterAsset },
-    { id: 'raiden-2-1', name: 'Raiden Shogun', featuredName: 'Raiden Shogun', version: '2.1', phase: 1, featuredFourStars: ['Kujou Sara', 'Xiangling', 'Sucrose'], imageUrl: defaultCharacterAsset },
-    { id: 'raiden-2-5', name: 'Raiden Shogun', featuredName: 'Raiden Shogun', version: '2.5', phase: 2, featuredFourStars: ['Bennett', 'Xinyan', 'Kujou Sara'], imageUrl: defaultCharacterAsset },
-    { id: 'raiden-3-3', name: 'Raiden Shogun', featuredName: 'Raiden Shogun', version: '3.3', phase: 2, featuredFourStars: ['Rosaria', 'Sayu', 'Kujou Sara'], imageUrl: defaultCharacterAsset },
-    { id: 'raiden-4-3', name: 'Raiden Shogun', featuredName: 'Raiden Shogun', version: '4.3', phase: 2, featuredFourStars: ['Chevreuse', 'Kujou Sara', 'Bennett'], imageUrl: defaultCharacterAsset },
-    { id: 'raiden-5-0', name: 'Raiden Shogun', featuredName: 'Raiden Shogun', version: '5.0', phase: 2, featuredFourStars: ['Thoma', 'Kujou Sara', 'Chevreuse'], imageUrl: defaultCharacterAsset },
-    { id: 'raiden-6-7', name: 'Raiden Shogun', featuredName: 'Raiden Shogun', version: '6.7', phase: 2, featuredFourStars: ['Jahoda', 'Ororon', 'Sethos'], imageUrl: defaultCharacterAsset },
-    { id: 'mualani-5-0', name: 'Mualani', featuredName: 'Mualani', version: '5.0', phase: 1, featuredFourStars: ['Kachina', 'Xinyan', 'Bennett'], imageUrl: defaultCharacterAsset },
-    { id: 'kazuha-5-0', name: 'Kazuha', featuredName: 'Kazuha', version: '5.0', phase: 1, featuredFourStars: ['Kachina', 'Xinyan', 'Bennett'], imageUrl: defaultCharacterAsset },
-    { id: 'nahida-4-1', name: 'Nahida', featuredName: 'Nahida', version: '4.1', phase: 2, featuredFourStars: ['Sethos', 'Xingqiu', 'Kuki Shinobu'], imageUrl: defaultCharacterAsset },
-    { id: 'furina-4-2', name: 'Furina', featuredName: 'Furina', version: '4.2', phase: 1, featuredFourStars: ['Charlotte', 'Collei', 'Beidou'], imageUrl: defaultCharacterAsset },
-    { id: 'durin-6-6', name: 'Durin', featuredName: 'Durin', version: '6.6', phase: 1, featuredFourStars: ['Fischl', 'Prune', 'Razor'], imageUrl: defaultCharacterAsset },
-    { id: 'mavuika-6-6', name: 'Mavuika', featuredName: 'Mavuika', version: '6.6', phase: 2, featuredFourStars: ['Bennett', 'Xiangling', 'Mika'], imageUrl: defaultCharacterAsset },
-    { id: 'skirk-6-5', name: 'Skirk', featuredName: 'Skirk', version: '6.5', phase: 2, featuredFourStars: ['Dahlia', 'Candace', 'Charlotte'], imageUrl: defaultCharacterAsset },
-    { id: 'escoffier-6-5', name: 'Escoffier', featuredName: 'Escoffier', version: '6.5', phase: 2, featuredFourStars: ['Dahlia', 'Candace', 'Charlotte'], imageUrl: defaultCharacterAsset },
-    { id: 'chaska-6-4', name: 'Chasca', featuredName: 'Chasca', version: '6.4', phase: 1, featuredFourStars: ['Ororon', 'Sucrose', 'Barbara'], imageUrl: defaultCharacterAsset },
-    { id: 'lyney-6-4', name: 'Lyney', featuredName: 'Lyney', version: '6.4', phase: 1, featuredFourStars: ['Ororon', 'Sucrose', 'Barbara'], imageUrl: defaultCharacterAsset },
-    { id: 'neuvillette-6-3', name: 'Neuvillette', featuredName: 'Neuvillette', version: '6.3', phase: 2, featuredFourStars: ['Illuga', 'Aino', 'Gorou'], imageUrl: defaultCharacterAsset },
-    { id: 'venti-6-2', name: 'Venti', featuredName: 'Venti', version: '6.2', phase: 1, featuredFourStars: ['Jahoda', 'Bennett', 'Faruzan'], imageUrl: defaultCharacterAsset },
-  ],
+  'genshin-character': genshinCharacterBanners,
   'star-rail-character': ['Acheron', 'Kafka', 'Firefly', 'Jingliu'].map((name) => ({
     id: name.toLowerCase().replaceAll(' ', '-'), name, featuredName: name, version: 'All versions', featuredFourStars: [], imageUrl: defaultCharacterAsset,
   })),
@@ -268,6 +275,17 @@ const weaponBannerChoices: BannerChoice[] = [
   { id: 'weapons-3-3-p2', name: 'Engulfing Lightning + Haran Geppaku Futsu', featuredName: 'Engulfing Lightning', featuredNames: ['Engulfing Lightning', 'Haran Geppaku Futsu'], version: '3.3', phase: 2, featuredFourStars: ['Favonius Sword', 'Dragon\'s Bane', 'Favonius Warbow'], imageUrl: defaultCharacterAsset },
   { id: 'weapons-4-3-p2', name: 'Engulfing Lightning + Thundering Pulse', featuredName: 'Engulfing Lightning', featuredNames: ['Engulfing Lightning', 'Thundering Pulse'], version: '4.3', phase: 2, featuredFourStars: ['Lithic Spear', 'Akuoumaru', 'Rust'], imageUrl: defaultCharacterAsset },
   { id: 'weapons-5-0-p2', name: 'Engulfing Lightning + Fang of the Mountain King', featuredName: 'Engulfing Lightning', featuredNames: ['Engulfing Lightning', 'Fang of the Mountain King'], version: '5.0', phase: 2, featuredFourStars: ['Xiphos\' Moonlight', 'Sacrificial Greatsword', 'The Stringless'], imageUrl: defaultCharacterAsset },
+]
+
+// Keep every released patch selectable even when a source has not published a
+// phase record yet. This prevents the picker from silently hiding versions.
+const genshinVersions = [
+  ...Array.from({ length: 7 }, (_, index) => `1.${index}`),
+  ...Array.from({ length: 9 }, (_, index) => `2.${index}`),
+  ...Array.from({ length: 9 }, (_, index) => `3.${index}`),
+  ...Array.from({ length: 9 }, (_, index) => `4.${index}`),
+  ...Array.from({ length: 9 }, (_, index) => `5.${index}`),
+  ...Array.from({ length: 8 }, (_, index) => `6.${index}`),
 ]
 
 function sortVersions(first: string, second: string) {
@@ -379,7 +397,7 @@ function App() {
   const [lastBatch, setLastBatch] = useState<PullResult[]>([])
   const [history, setHistory] = useState<PullResult[]>([])
   const [copied, setCopied] = useState(false)
-  const [selectedBannerId, setSelectedBannerId] = useState('nahida')
+  const [selectedBannerId, setSelectedBannerId] = useState('6-7-p1')
   const [selectedBannerVersion, setSelectedBannerVersion] = useState('All versions')
   const [liveGenshinBanners, setLiveGenshinBanners] = useState(bannerChoices['genshin-character'])
   const [selectedWishType, setSelectedWishType] = useState<'character' | 'weapon'>('character')
@@ -412,7 +430,9 @@ function App() {
   const activeBannerChoices = activeRules.id === 'genshin-character'
     ? selectedWishType === 'character' ? liveGenshinBanners : weaponBannerChoices
     : bannerChoices[activeRules.id] ?? []
-  const bannerVersions = ['All versions', ...Array.from(new Set(activeBannerChoices.map((choice) => choice.version))).sort(sortVersions)]
+  const bannerVersions = activeRules.id === 'genshin-character'
+    ? ['All versions', ...genshinVersions.sort(sortVersions)]
+    : ['All versions', ...Array.from(new Set(activeBannerChoices.map((choice) => choice.version))).sort(sortVersions)]
   const visibleBannerChoices = selectedBannerVersion === 'All versions'
     ? activeBannerChoices
     : activeBannerChoices.filter((choice) => choice.version === selectedBannerVersion)
@@ -493,11 +513,22 @@ function App() {
           .filter((item) => typeof item.name === 'string')
           .map((item) => [item.name?.toLowerCase(), item]),
       )
-      const characterBanners = bannerChoices['genshin-character'].map((choice) => {
-        const metadata = metadataByName.get(choice.name.toLowerCase())
+      const aliases: Record<string, string> = {
+        kazuha: 'kaedehara kazuha',
+        kokomi: 'sangonomiya kokomi',
+        raiden: 'raiden shogun',
+        chasca: 'chasca',
+      }
+      const characterBanners = genshinCharacterBanners.map((choice) => {
+        const metadata = metadataByName.get((aliases[choice.featuredName.toLowerCase()] || choice.featuredName).toLowerCase())
         return {
           ...choice,
           imageUrl: metadata?.images?.hoyowiki_icon || metadata?.images?.icon || choice.imageUrl,
+          imageUrls: (choice.featuredNames ?? [choice.featuredName]).map((name) => {
+            const nameKey = aliases[name.toLowerCase()] || name
+            const item = metadataByName.get(nameKey.toLowerCase())
+            return item?.images?.hoyowiki_icon || item?.images?.icon || defaultCharacterAsset
+          }),
         }
       })
       if (characterBanners.length === 0) throw new Error('Empty catalog returned')
@@ -506,7 +537,7 @@ function App() {
         ...current,
         banner: `${characterBanners[0].name} Banner`,
         featuredName: characterBanners[0].featuredName,
-        featuredPool: [characterBanners[0].featuredName],
+        featuredPool: characterBanners[0].featuredNames ?? [characterBanners[0].featuredName],
         imageUrl: characterBanners[0].imageUrl,
         fourStarPool: characterBanners[0].featuredFourStars,
       }))
@@ -788,13 +819,16 @@ function App() {
             <div className="summon-stage">
               <div className="summon-art-wrap">
                 <div className="banner-badge">{activeRules.bannerKind}</div>
-                <img
-                  className="summon-art"
-                  src={activeImageUrl}
-                  alt=""
-                data-character={activeRules.imageUrl ? 'true' : 'false'}
-                onError={handleImageFallback}
-              />
+                {(activeBannerChoices.find((choice) => choice.id === selectedBannerId)?.imageUrls ?? [activeImageUrl]).map((imageUrl, index) => (
+                  <img
+                    className="summon-art"
+                    key={`${imageUrl}-${index}`}
+                    src={imageUrl}
+                    alt=""
+                    data-character={imageUrl !== defaultCharacterAsset ? 'true' : 'false'}
+                    onError={handleImageFallback}
+                  />
+                ))}
             </div>
 
             <div className="summon-copy">

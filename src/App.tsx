@@ -52,6 +52,7 @@ type BannerChoice = {
   version: string
   phase?: 1 | 2
   featuredFourStars: string[]
+  featuredNames?: string[]
 }
 
 type GenshinDbCharacter = {
@@ -261,6 +262,14 @@ const bannerChoices: Record<string, BannerChoice[]> = {
   })),
 }
 
+const weaponBannerChoices: BannerChoice[] = [
+  { id: 'weapons-2-1-p1', name: 'Engulfing Lightning + The Unforged', featuredName: 'Engulfing Lightning', featuredNames: ['Engulfing Lightning', 'The Unforged'], version: '2.1', phase: 1, featuredFourStars: ['The Alley Flash', 'The Bell', 'The Stringless'], imageUrl: defaultCharacterAsset },
+  { id: 'weapons-2-5-p2', name: 'Engulfing Lightning + Everlasting Moonglow', featuredName: 'Engulfing Lightning', featuredNames: ['Engulfing Lightning', 'Everlasting Moonglow'], version: '2.5', phase: 2, featuredFourStars: ['The Widsith', 'Favonius Lance', 'Eye of Perception'], imageUrl: defaultCharacterAsset },
+  { id: 'weapons-3-3-p2', name: 'Engulfing Lightning + Haran Geppaku Futsu', featuredName: 'Engulfing Lightning', featuredNames: ['Engulfing Lightning', 'Haran Geppaku Futsu'], version: '3.3', phase: 2, featuredFourStars: ['Favonius Sword', 'Dragon\'s Bane', 'Favonius Warbow'], imageUrl: defaultCharacterAsset },
+  { id: 'weapons-4-3-p2', name: 'Engulfing Lightning + Thundering Pulse', featuredName: 'Engulfing Lightning', featuredNames: ['Engulfing Lightning', 'Thundering Pulse'], version: '4.3', phase: 2, featuredFourStars: ['Lithic Spear', 'Akuoumaru', 'Rust'], imageUrl: defaultCharacterAsset },
+  { id: 'weapons-5-0-p2', name: 'Engulfing Lightning + Fang of the Mountain King', featuredName: 'Engulfing Lightning', featuredNames: ['Engulfing Lightning', 'Fang of the Mountain King'], version: '5.0', phase: 2, featuredFourStars: ['Xiphos\' Moonlight', 'Sacrificial Greatsword', 'The Stringless'], imageUrl: defaultCharacterAsset },
+]
+
 function sortVersions(first: string, second: string) {
   const firstParts = first.split('.').map(Number)
   const secondParts = second.split('.').map(Number)
@@ -373,6 +382,7 @@ function App() {
   const [selectedBannerId, setSelectedBannerId] = useState('nahida')
   const [selectedBannerVersion, setSelectedBannerVersion] = useState('All versions')
   const [liveGenshinBanners, setLiveGenshinBanners] = useState(bannerChoices['genshin-character'])
+  const [selectedWishType, setSelectedWishType] = useState<'character' | 'weapon'>('character')
   const [sourceState, setSourceState] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle')
   const [sourceMessage, setSourceMessage] = useState('')
 
@@ -400,7 +410,7 @@ function App() {
   const activeFeaturedPool = activeRules.featuredPool.length > 0 ? activeRules.featuredPool : [activeRules.featuredName]
   const activeOffBannerPool = activeRules.offBannerPool.length > 0 ? activeRules.offBannerPool : [activeRules.offBannerName]
   const activeBannerChoices = activeRules.id === 'genshin-character'
-    ? liveGenshinBanners
+    ? selectedWishType === 'character' ? liveGenshinBanners : weaponBannerChoices
     : bannerChoices[activeRules.id] ?? []
   const bannerVersions = ['All versions', ...Array.from(new Set(activeBannerChoices.map((choice) => choice.version))).sort(sortVersions)]
   const visibleBannerChoices = selectedBannerVersion === 'All versions'
@@ -424,6 +434,7 @@ function App() {
     setSourceMessage('')
     setSelectedBannerId(bannerChoices[preset.id]?.[0]?.id ?? '')
     setSelectedBannerVersion('All versions')
+    setSelectedWishType('character')
   }
 
   function selectCustomPreset() {
@@ -439,9 +450,9 @@ function App() {
     setRules((current) => ({
       ...current,
       banner: `${choice.name} Banner`,
-      bannerKind: 'character',
+      bannerKind: selectedWishType,
       featuredName: choice.featuredName,
-      featuredPool: [choice.featuredName],
+      featuredPool: choice.featuredNames ?? [choice.featuredName],
       fourStarPool: choice.featuredFourStars,
       imageUrl: choice.imageUrl,
     }))
@@ -734,6 +745,21 @@ function App() {
             <div className="banner-picker" aria-label="Choose a banner">
               <div className="banner-picker-heading">
                 <span className="eyebrow">Choose banner</span>
+                <div className="collection-toggle" role="tablist" aria-label="Wish type">
+                  {(['character', 'weapon'] as const).map((wishType) => (
+                    <button
+                      className={selectedWishType === wishType ? 'active' : ''}
+                      key={wishType}
+                      type="button"
+                      onClick={() => {
+                        setSelectedWishType(wishType)
+                        setSelectedBannerVersion('All versions')
+                      }}
+                    >
+                      {wishType === 'character' ? 'Characters' : 'Weapons'}
+                    </button>
+                  ))}
+                </div>
                 <label>
                   <span>Version</span>
                   <select value={selectedBannerVersion} onChange={(event) => setSelectedBannerVersion(event.target.value)}>

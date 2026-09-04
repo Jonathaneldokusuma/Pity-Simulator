@@ -1035,10 +1035,33 @@ select {
   font-weight: 750;
 }
 
-.banner-choice-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+.banner-picker-heading label {
+  display: inline-flex;
+  align-items: center;
   gap: 8px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.banner-picker-heading select {
+  min-height: 32px;
+  width: auto;
+  min-width: 120px;
+  padding: 4px 8px;
+  color: var(--ink);
+  font-size: 0.78rem;
+  text-transform: none;
+}
+
+.banner-choice-grid {
+  max-height: 236px;
+  overflow: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: 8px;
+  padding-right: 2px;
 }
 
 .banner-choice {

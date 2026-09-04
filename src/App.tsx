@@ -49,6 +49,16 @@ type BannerChoice = {
   name: string
   featuredName: string
   imageUrl: string
+  version: string
+}
+
+type GenshinDbCharacter = {
+  name?: string
+  rarity?: number | string
+  version?: string
+  images?: {
+    hoyowiki_icon?: string
+  }
 }
 
 const defaultCharacterAsset = 'https://raw.githubusercontent.com/dromzeh/genshin-splash-art/main/kazuha.png'
@@ -215,19 +225,19 @@ const customPreset: BannerRules = {
 
 const bannerChoices: Record<string, BannerChoice[]> = {
   'genshin-character': [
-    { id: 'nahida', name: 'Nahida', featuredName: 'Nahida', imageUrl: 'https://raw.githubusercontent.com/dromzeh/genshin-splash-art/main/nahida.png' },
-    { id: 'furina', name: 'Furina', featuredName: 'Furina', imageUrl: 'https://raw.githubusercontent.com/dromzeh/genshin-splash-art/main/furina.png' },
-    { id: 'yelan', name: 'Yelan', featuredName: 'Yelan', imageUrl: 'https://raw.githubusercontent.com/dromzeh/genshin-splash-art/main/yelan.png' },
-    { id: 'kazuha', name: 'Kazuha', featuredName: 'Kazuha', imageUrl: defaultCharacterAsset },
+    { id: 'nahida', name: 'Nahida', featuredName: 'Nahida', version: '3.2', imageUrl: 'https://raw.githubusercontent.com/dromzeh/genshin-splash-art/main/nahida.png' },
+    { id: 'furina', name: 'Furina', featuredName: 'Furina', version: '4.2', imageUrl: 'https://raw.githubusercontent.com/dromzeh/genshin-splash-art/main/furina.png' },
+    { id: 'yelan', name: 'Yelan', featuredName: 'Yelan', version: '2.7', imageUrl: 'https://raw.githubusercontent.com/dromzeh/genshin-splash-art/main/yelan.png' },
+    { id: 'kazuha', name: 'Kazuha', featuredName: 'Kazuha', version: '2.8', imageUrl: defaultCharacterAsset },
   ],
   'star-rail-character': ['Acheron', 'Kafka', 'Firefly', 'Jingliu'].map((name) => ({
-    id: name.toLowerCase().replaceAll(' ', '-'), name, featuredName: name, imageUrl: defaultCharacterAsset,
+    id: name.toLowerCase().replaceAll(' ', '-'), name, featuredName: name, version: 'All versions', imageUrl: defaultCharacterAsset,
   })),
   'zenless-signal': ['Ellen', 'Zhu Yuan', 'Jane Doe', 'Yanagi'].map((name) => ({
-    id: name.toLowerCase().replaceAll(' ', '-'), name, featuredName: name, imageUrl: defaultCharacterAsset,
+    id: name.toLowerCase().replaceAll(' ', '-'), name, featuredName: name, version: 'All versions', imageUrl: defaultCharacterAsset,
   })),
   'wuwa-convene': ['Jiyan', 'Changli', 'Zhezhi', 'Camellya'].map((name) => ({
-    id: name.toLowerCase(), name, featuredName: name, imageUrl: defaultCharacterAsset,
+    id: name.toLowerCase(), name, featuredName: name, version: 'All versions', imageUrl: defaultCharacterAsset,
   })),
 }
 
@@ -324,13 +334,6 @@ function pickBannerFace(rules: BannerRules) {
   return pool[Math.floor(Math.random() * pool.length)]
 }
 
-function displaySourceName(name: string) {
-  return name
-    .split('-')
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(' ')
-}
-
 function App() {
   const [selectedPresetId, setSelectedPresetId] = useState(presets[0].id)
   const [rules, setRules] = useState<BannerRules>(() => copyRules(presets[0]))
@@ -342,6 +345,8 @@ function App() {
   const [history, setHistory] = useState<PullResult[]>([])
   const [copied, setCopied] = useState(false)
   const [selectedBannerId, setSelectedBannerId] = useState('nahida')
+  const [selectedBannerVersion, setSelectedBannerVersion] = useState('All versions')
+  const [liveGenshinBanners, setLiveGenshinBanners] = useState(bannerChoices['genshin-character'])
   const [sourceState, setSourceState] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle')
   const [sourceMessage, setSourceMessage] = useState('')
 
@@ -368,6 +373,13 @@ function App() {
   const activeBannerFace = useMemo(() => pickBannerFace(activeRules), [activeRules])
   const activeFeaturedPool = activeRules.featuredPool.length > 0 ? activeRules.featuredPool : [activeRules.featuredName]
   const activeOffBannerPool = activeRules.offBannerPool.length > 0 ? activeRules.offBannerPool : [activeRules.offBannerName]
+  const activeBannerChoices = activeRules.id === 'genshin-character'
+    ? liveGenshinBanners
+    : bannerChoices[activeRules.id] ?? []
+  const bannerVersions = ['All versions', ...new Set(activeBannerChoices.map((choice) => choice.version))]
+  const visibleBannerChoices = selectedBannerVersion === 'All versions'
+    ? activeBannerChoices
+    : activeBannerChoices.filter((choice) => choice.version === selectedBannerVersion)
 
   function resetSession() {
     setPity5(0)
@@ -385,6 +397,7 @@ function App() {
     setSourceState('idle')
     setSourceMessage('')
     setSelectedBannerId(bannerChoices[preset.id]?.[0]?.id ?? '')
+    setSelectedBannerVersion('All versions')
   }
 
   function selectCustomPreset() {
@@ -418,37 +431,41 @@ function App() {
     setSourceMessage('Loading the current Genshin character catalog...')
 
     try {
-      const sourceUrls = [
-        'https://genshin.jmp.blue/characters',
-        'https://api.genshin.dev/characters',
-      ]
-      let payload: unknown
-
-      for (const sourceUrl of sourceUrls) {
-        try {
-          const response = await fetch(sourceUrl)
-          if (!response.ok) continue
-          payload = await response.json()
-          break
-        } catch {
-          // Try the next public mirror.
-        }
-      }
-
-      const names = Array.isArray(payload)
-        ? payload
-            .filter((item): item is string => typeof item === 'string')
-            .map(displaySourceName)
+      const response = await fetch(
+        'https://genshin-db-api.vercel.app/api/v5/characters?query=names&matchCategories=true&verboseCategories=true&resultLanguage=English',
+      )
+      if (!response.ok) throw new Error('Source request failed')
+      const payload: unknown = await response.json()
+      const records = Array.isArray(payload)
+        ? payload.filter((item): item is GenshinDbCharacter => typeof item === 'object' && item !== null)
         : []
+      const fiveStarBanners = records
+        .filter((item) => String(item.rarity) === '5' && typeof item.name === 'string')
+        .map((item) => {
+          const name = item.name as string
+          return {
+            id: name.toLowerCase().replaceAll(' ', '-'),
+            name,
+            featuredName: name,
+            version: item.version || 'Catalog',
+            imageUrl: item.images?.hoyowiki_icon || defaultCharacterAsset,
+          }
+        })
 
-      if (names.length === 0) throw new Error('No characters returned')
+      if (fiveStarBanners.length === 0) throw new Error('No 5-star characters returned')
 
       setRules((current) => ({
         ...current,
-        fourStarPool: names,
+        banner: `${fiveStarBanners[0].name} Banner`,
+        featuredName: fiveStarBanners[0].featuredName,
+        featuredPool: [fiveStarBanners[0].featuredName],
+        imageUrl: fiveStarBanners[0].imageUrl,
+        fourStarPool: fiveStarBanners.map((choice) => choice.name),
       }))
+      setLiveGenshinBanners(fiveStarBanners)
+      setSelectedBannerId(fiveStarBanners[0].id)
       setSourceState('loaded')
-      setSourceMessage(`Loaded ${names.length} characters from genshin.dev. Your selected banner stayed separate.`)
+      setSourceMessage(`Loaded ${fiveStarBanners.length} 5-star characters from genshin-db. Choose one banner.`)
     } catch {
       setSourceState('error')
       setSourceMessage('Could not reach the API. The built-in preset is still available.')
@@ -676,14 +693,19 @@ function App() {
         </section>
 
         <section className="panel summon-panel" aria-labelledby="summon-heading">
-          {(bannerChoices[activeRules.id] ?? []).length > 0 && (
+          {activeBannerChoices.length > 0 && (
             <div className="banner-picker" aria-label="Choose a banner">
               <div className="banner-picker-heading">
                 <span className="eyebrow">Choose banner</span>
-                <small>One featured character per banner</small>
+                <label>
+                  <span>Version</span>
+                  <select value={selectedBannerVersion} onChange={(event) => setSelectedBannerVersion(event.target.value)}>
+                    {bannerVersions.map((version) => <option key={version}>{version}</option>)}
+                  </select>
+                </label>
               </div>
               <div className="banner-choice-grid">
-                {(bannerChoices[activeRules.id] ?? []).map((choice) => (
+                {visibleBannerChoices.map((choice) => (
                   <button
                     className={`banner-choice ${selectedBannerId === choice.id ? 'active' : ''}`}
                     key={choice.id}
@@ -691,7 +713,7 @@ function App() {
                     onClick={() => selectBanner(choice)}
                   >
                     <span>{choice.name}</span>
-                    {selectedBannerId === choice.id && <small>Selected</small>}
+                    <small>{selectedBannerId === choice.id ? 'Selected' : `Version ${choice.version}`}</small>
                   </button>
                 ))}
               </div>

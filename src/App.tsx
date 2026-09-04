@@ -44,6 +44,13 @@ type BannerRules = {
   sourceUrl: string
 }
 
+type BannerChoice = {
+  id: string
+  name: string
+  featuredName: string
+  imageUrl: string
+}
+
 const defaultCharacterAsset = 'https://raw.githubusercontent.com/dromzeh/genshin-splash-art/main/kazuha.png'
 
 type PullResult = {
@@ -206,6 +213,24 @@ const customPreset: BannerRules = {
   sourceUrl: 'https://github.com/Jonathaneldokusuma/Pity-Simulator',
 }
 
+const bannerChoices: Record<string, BannerChoice[]> = {
+  'genshin-character': [
+    { id: 'nahida', name: 'Nahida', featuredName: 'Nahida', imageUrl: 'https://raw.githubusercontent.com/dromzeh/genshin-splash-art/main/nahida.png' },
+    { id: 'furina', name: 'Furina', featuredName: 'Furina', imageUrl: 'https://raw.githubusercontent.com/dromzeh/genshin-splash-art/main/furina.png' },
+    { id: 'yelan', name: 'Yelan', featuredName: 'Yelan', imageUrl: 'https://raw.githubusercontent.com/dromzeh/genshin-splash-art/main/yelan.png' },
+    { id: 'kazuha', name: 'Kazuha', featuredName: 'Kazuha', imageUrl: defaultCharacterAsset },
+  ],
+  'star-rail-character': ['Acheron', 'Kafka', 'Firefly', 'Jingliu'].map((name) => ({
+    id: name.toLowerCase().replaceAll(' ', '-'), name, featuredName: name, imageUrl: defaultCharacterAsset,
+  })),
+  'zenless-signal': ['Ellen', 'Zhu Yuan', 'Jane Doe', 'Yanagi'].map((name) => ({
+    id: name.toLowerCase().replaceAll(' ', '-'), name, featuredName: name, imageUrl: defaultCharacterAsset,
+  })),
+  'wuwa-convene': ['Jiyan', 'Changli', 'Zhezhi', 'Camellya'].map((name) => ({
+    id: name.toLowerCase(), name, featuredName: name, imageUrl: defaultCharacterAsset,
+  })),
+}
+
 const emptyTotals: Totals = {
   pulls: 0,
   fiveStars: 0,
@@ -299,10 +324,6 @@ function pickBannerFace(rules: BannerRules) {
   return pool[Math.floor(Math.random() * pool.length)]
 }
 
-function toGenshinSlug(name: string) {
-  return name.toLowerCase().replaceAll(' ', '-').replaceAll("'", '')
-}
-
 function displaySourceName(name: string) {
   return name
     .split('-')
@@ -320,6 +341,7 @@ function App() {
   const [lastBatch, setLastBatch] = useState<PullResult[]>([])
   const [history, setHistory] = useState<PullResult[]>([])
   const [copied, setCopied] = useState(false)
+  const [selectedBannerId, setSelectedBannerId] = useState('nahida')
   const [sourceState, setSourceState] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle')
   const [sourceMessage, setSourceMessage] = useState('')
 
@@ -362,6 +384,7 @@ function App() {
     resetSession()
     setSourceState('idle')
     setSourceMessage('')
+    setSelectedBannerId(bannerChoices[preset.id]?.[0]?.id ?? '')
   }
 
   function selectCustomPreset() {
@@ -370,6 +393,18 @@ function App() {
     resetSession()
     setSourceState('idle')
     setSourceMessage('')
+  }
+
+  function selectBanner(choice: BannerChoice) {
+    setSelectedBannerId(choice.id)
+    setRules((current) => ({
+      ...current,
+      banner: `${choice.name} Banner`,
+      featuredName: choice.featuredName,
+      featuredPool: [choice.featuredName],
+      imageUrl: choice.imageUrl,
+    }))
+    resetSession()
   }
 
   async function loadLiveSource() {
@@ -410,12 +445,10 @@ function App() {
 
       setRules((current) => ({
         ...current,
-        featuredPool: names.slice(0, 24),
-        fourStarPool: names.slice(24, 48),
-        imageUrl: `https://raw.githubusercontent.com/dromzeh/genshin-splash-art/main/${toGenshinSlug(names[0])}.png`,
+        fourStarPool: names,
       }))
       setSourceState('loaded')
-      setSourceMessage(`Loaded ${names.length} characters from genshin.dev. Choose the banner pools below.`)
+      setSourceMessage(`Loaded ${names.length} characters from genshin.dev. Your selected banner stayed separate.`)
     } catch {
       setSourceState('error')
       setSourceMessage('Could not reach the API. The built-in preset is still available.')
@@ -643,6 +676,27 @@ function App() {
         </section>
 
         <section className="panel summon-panel" aria-labelledby="summon-heading">
+          {(bannerChoices[activeRules.id] ?? []).length > 0 && (
+            <div className="banner-picker" aria-label="Choose a banner">
+              <div className="banner-picker-heading">
+                <span className="eyebrow">Choose banner</span>
+                <small>One featured character per banner</small>
+              </div>
+              <div className="banner-choice-grid">
+                {(bannerChoices[activeRules.id] ?? []).map((choice) => (
+                  <button
+                    className={`banner-choice ${selectedBannerId === choice.id ? 'active' : ''}`}
+                    key={choice.id}
+                    type="button"
+                    onClick={() => selectBanner(choice)}
+                  >
+                    <span>{choice.name}</span>
+                    {selectedBannerId === choice.id && <small>Selected</small>}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
             <div className="summon-stage">
               <div className="summon-art-wrap">
                 <div className="banner-badge">{activeRules.bannerKind}</div>

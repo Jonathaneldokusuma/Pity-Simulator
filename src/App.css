@@ -1010,3 +1010,90 @@ select {
 .spent-box small {
   color: #557274;
 }
+
+.banner-picker {
+  padding: 18px 22px 16px;
+  border-bottom: 1px solid var(--line);
+  background: #ffffff;
+}
+
+.banner-picker-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.banner-picker-heading .eyebrow {
+  margin: 0;
+}
+
+.banner-picker-heading small {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.banner-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.banner-choice {
+  min-height: 48px;
+  padding: 9px 10px;
+  display: grid;
+  gap: 2px;
+  justify-items: start;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--ink);
+  background: #f7f9fa;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 160ms ease, background-color 160ms ease, transform 160ms ease;
+}
+
+.banner-choice:hover {
+  transform: translateY(-2px);
+  border-color: var(--rule-accent);
+}
+
+.banner-choice.active {
+  border-color: var(--rule-accent);
+  background: color-mix(in srgb, var(--rule-accent) 10%, #ffffff);
+  box-shadow: inset 0 0 0 1px var(--rule-accent);
+}
+
+.banner-choice span {
+  overflow: hidden;
+  max-width: 100%;
+  font-size: 0.86rem;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.banner-choice small {
+  color: var(--rule-accent);
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+@media (max-width: 540px) {
+  .banner-picker {
+    padding: 16px;
+  }
+
+  .banner-picker-heading {
+    display: grid;
+    gap: 4px;
+  }
+
+  .banner-choice-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

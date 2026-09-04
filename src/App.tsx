@@ -234,7 +234,7 @@ const genshinBanner = (id: string, version: string, phase: 1 | 2, names: string[
   imageUrls: names.map(() => defaultCharacterAsset),
 })
 
-const genshinCharacterBanners: BannerChoice[] = [
+const genshinPhaseBanners: BannerChoice[] = [
   genshinBanner('6-7-p1', '6.7', 1, ['Sandrone', 'Citlali'], ['Beidou', 'Freminet', 'Diona']),
   genshinBanner('6-7-p2', '6.7', 2, ['Columbina', 'Raiden Shogun'], ['Jahoda', 'Ororon', 'Sethos']),
   genshinBanner('6-6-p1', '6.6', 1, ['Nicole', 'Durin'], ['Fischl', 'Prune', 'Razor']),
@@ -255,6 +255,22 @@ const genshinCharacterBanners: BannerChoice[] = [
   genshinBanner('2-5-p2', '2.5', 2, ['Raiden Shogun', 'Sangonomiya Kokomi'], ['Bennett', 'Xinyan', 'Kujou Sara']),
   genshinBanner('2-1-p1', '2.1', 1, ['Raiden Shogun'], ['Kujou Sara', 'Xiangling', 'Sucrose']),
 ]
+
+// Two rate-up characters share a phase, but they are still separate wishes.
+// Keep one selectable card per 5-star so their pity simulations never merge.
+const splitGenshinBanners = (phases: BannerChoice[]) => phases.flatMap((phase) =>
+  (phase.featuredNames ?? [phase.featuredName]).map((name, index) => ({
+    ...phase,
+    id: `${phase.id}-${name.toLowerCase().replaceAll(' ', '-')}`,
+    name,
+    featuredName: name,
+    featuredNames: [name],
+    imageUrl: phase.imageUrls?.[index] ?? phase.imageUrl,
+    imageUrls: [phase.imageUrls?.[index] ?? phase.imageUrl],
+  })),
+)
+
+const genshinCharacterBanners = splitGenshinBanners(genshinPhaseBanners)
 
 const bannerChoices: Record<string, BannerChoice[]> = {
   'genshin-character': genshinCharacterBanners,
@@ -400,6 +416,7 @@ function App() {
   const [selectedBannerId, setSelectedBannerId] = useState('6-7-p1')
   const [selectedBannerVersion, setSelectedBannerVersion] = useState('All versions')
   const [liveGenshinBanners, setLiveGenshinBanners] = useState(bannerChoices['genshin-character'])
+  const [genshinImages, setGenshinImages] = useState<Map<string, string>>(new Map())
   const [selectedWishType, setSelectedWishType] = useState<'character' | 'weapon'>('character')
   const [sourceState, setSourceState] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle')
   const [sourceMessage, setSourceMessage] = useState('')
@@ -479,6 +496,10 @@ function App() {
     resetSession()
   }
 
+  function getRewardImage(name: string) {
+    return genshinImages.get(name.toLowerCase()) || ''
+  }
+
   useEffect(() => {
     void loadLiveSource()
     // The loader is intentionally run once when the simulator opens.
@@ -532,6 +553,17 @@ function App() {
         }
       })
       if (characterBanners.length === 0) throw new Error('Empty catalog returned')
+
+      const imageMap = new Map(characterRecords.flatMap((item) => {
+        if (!item.name) return []
+        const image = item.images?.hoyowiki_icon || item.images?.icon
+        return image ? [[item.name.toLowerCase(), image] as [string, string]] : []
+      }))
+      Object.entries(aliases).forEach(([label, canonical]) => {
+        const image = imageMap.get(canonical.toLowerCase())
+        if (image) imageMap.set(label, image)
+      })
+      setGenshinImages(imageMap)
 
       setRules((current) => ({
         ...current,
@@ -590,18 +622,19 @@ function App() {
             ? true
             : Math.random() * 100 < runRules.guaranteeRate
 
+        const rewardName = wonFeatured
+          ? pickRewardName(runRules.featuredPool, runRules.featuredName)
+          : pickRewardName(runRules.offBannerPool, runRules.offBannerName)
         batch.push({
           id: resultId(pullNumber),
           number: pullNumber,
           rarity: 5,
-          name: wonFeatured
-            ? pickRewardName(runRules.featuredPool, runRules.featuredName)
-            : pickRewardName(runRules.offBannerPool, runRules.offBannerName),
+          name: rewardName,
           featured: wonFeatured,
           pityAt,
           chance: fiveChance,
           guaranteed: wasGuaranteed,
-          imageUrl: runRules.imageUrl,
+          imageUrl: getRewardImage(rewardName) || runRules.imageUrl,
         })
 
         nextTotals.fiveStars += 1
@@ -625,31 +658,33 @@ function App() {
       const hitFourStar = Math.random() * 100 < fourChance
 
       if (hitFourStar) {
+        const rewardName = pickRewardName(runRules.fourStarPool, '4-star reward')
         batch.push({
           id: resultId(pullNumber),
           number: pullNumber,
           rarity: 4,
-          name: pickRewardName(runRules.fourStarPool, '4-star reward'),
+          name: rewardName,
           featured: false,
           pityAt: nextPity4 + 1,
           chance: fourChance,
           guaranteed: false,
-          imageUrl: '',
+          imageUrl: getRewardImage(rewardName),
         })
 
         nextTotals.fourStars += 1
         nextPity4 = 0
       } else {
+        const rewardName = pickRewardName(runRules.threeStarPool, '3-star reward')
         batch.push({
           id: resultId(pullNumber),
           number: pullNumber,
           rarity: 3,
-          name: pickRewardName(runRules.threeStarPool, '3-star reward'),
+          name: rewardName,
           featured: false,
           pityAt: 0,
           chance: 0,
           guaranteed: false,
-          imageUrl: '',
+          imageUrl: getRewardImage(rewardName),
         })
 
         nextPity4 += 1

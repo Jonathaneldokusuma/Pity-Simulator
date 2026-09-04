@@ -50,6 +50,8 @@ type BannerChoice = {
   featuredName: string
   imageUrl: string
   version: string
+  phase?: 1 | 2
+  featuredFourStars: string[]
 }
 
 type GenshinDbCharacter = {
@@ -118,8 +120,8 @@ const presets: BannerRules[] = [
     currencyName: 'Primogem',
     pullCost: 160,
     accent: '#2f80ed',
-    sourceName: 'genshin.dev API + genshin-db',
-    sourceUrl: 'https://genshin.dev/',
+    sourceName: 'BannerHistory + genshin-db',
+    sourceUrl: 'https://bannerhistory.app/en/genshin-banners',
   },
   {
     id: 'star-rail-character',
@@ -226,19 +228,36 @@ const customPreset: BannerRules = {
 
 const bannerChoices: Record<string, BannerChoice[]> = {
   'genshin-character': [
-    { id: 'nahida', name: 'Nahida', featuredName: 'Nahida', version: '3.2', imageUrl: 'https://raw.githubusercontent.com/dromzeh/genshin-splash-art/main/nahida.png' },
-    { id: 'furina', name: 'Furina', featuredName: 'Furina', version: '4.2', imageUrl: 'https://raw.githubusercontent.com/dromzeh/genshin-splash-art/main/furina.png' },
-    { id: 'yelan', name: 'Yelan', featuredName: 'Yelan', version: '2.7', imageUrl: 'https://raw.githubusercontent.com/dromzeh/genshin-splash-art/main/yelan.png' },
-    { id: 'kazuha', name: 'Kazuha', featuredName: 'Kazuha', version: '2.8', imageUrl: defaultCharacterAsset },
+    { id: 'sandrone-6-7', name: 'Sandrone', featuredName: 'Sandrone', version: '6.7', phase: 1, featuredFourStars: ['Beidou', 'Freminet', 'Diona'], imageUrl: defaultCharacterAsset },
+    { id: 'citlali-6-7', name: 'Citlali', featuredName: 'Citlali', version: '6.7', phase: 1, featuredFourStars: ['Beidou', 'Freminet', 'Diona'], imageUrl: defaultCharacterAsset },
+    { id: 'columbina-6-7', name: 'Columbina', featuredName: 'Columbina', version: '6.7', phase: 2, featuredFourStars: ['Jahoda', 'Ororon', 'Sethos'], imageUrl: defaultCharacterAsset },
+    { id: 'raiden-2-1', name: 'Raiden Shogun', featuredName: 'Raiden Shogun', version: '2.1', phase: 1, featuredFourStars: ['Kujou Sara', 'Xiangling', 'Sucrose'], imageUrl: defaultCharacterAsset },
+    { id: 'raiden-2-5', name: 'Raiden Shogun', featuredName: 'Raiden Shogun', version: '2.5', phase: 2, featuredFourStars: ['Bennett', 'Xinyan', 'Kujou Sara'], imageUrl: defaultCharacterAsset },
+    { id: 'raiden-3-3', name: 'Raiden Shogun', featuredName: 'Raiden Shogun', version: '3.3', phase: 2, featuredFourStars: ['Rosaria', 'Sayu', 'Kujou Sara'], imageUrl: defaultCharacterAsset },
+    { id: 'raiden-4-3', name: 'Raiden Shogun', featuredName: 'Raiden Shogun', version: '4.3', phase: 2, featuredFourStars: ['Chevreuse', 'Kujou Sara', 'Bennett'], imageUrl: defaultCharacterAsset },
+    { id: 'raiden-5-0', name: 'Raiden Shogun', featuredName: 'Raiden Shogun', version: '5.0', phase: 2, featuredFourStars: ['Thoma', 'Kujou Sara', 'Chevreuse'], imageUrl: defaultCharacterAsset },
+    { id: 'raiden-6-7', name: 'Raiden Shogun', featuredName: 'Raiden Shogun', version: '6.7', phase: 2, featuredFourStars: ['Jahoda', 'Ororon', 'Sethos'], imageUrl: defaultCharacterAsset },
+    { id: 'mualani-5-0', name: 'Mualani', featuredName: 'Mualani', version: '5.0', phase: 1, featuredFourStars: ['Kachina', 'Xinyan', 'Bennett'], imageUrl: defaultCharacterAsset },
+    { id: 'kazuha-5-0', name: 'Kazuha', featuredName: 'Kazuha', version: '5.0', phase: 1, featuredFourStars: ['Kachina', 'Xinyan', 'Bennett'], imageUrl: defaultCharacterAsset },
+    { id: 'nahida-4-1', name: 'Nahida', featuredName: 'Nahida', version: '4.1', phase: 2, featuredFourStars: ['Sethos', 'Xingqiu', 'Kuki Shinobu'], imageUrl: defaultCharacterAsset },
+    { id: 'furina-4-2', name: 'Furina', featuredName: 'Furina', version: '4.2', phase: 1, featuredFourStars: ['Charlotte', 'Collei', 'Beidou'], imageUrl: defaultCharacterAsset },
+    { id: 'durin-6-6', name: 'Durin', featuredName: 'Durin', version: '6.6', phase: 1, featuredFourStars: ['Fischl', 'Prune', 'Razor'], imageUrl: defaultCharacterAsset },
+    { id: 'mavuika-6-6', name: 'Mavuika', featuredName: 'Mavuika', version: '6.6', phase: 2, featuredFourStars: ['Bennett', 'Xiangling', 'Mika'], imageUrl: defaultCharacterAsset },
+    { id: 'skirk-6-5', name: 'Skirk', featuredName: 'Skirk', version: '6.5', phase: 2, featuredFourStars: ['Dahlia', 'Candace', 'Charlotte'], imageUrl: defaultCharacterAsset },
+    { id: 'escoffier-6-5', name: 'Escoffier', featuredName: 'Escoffier', version: '6.5', phase: 2, featuredFourStars: ['Dahlia', 'Candace', 'Charlotte'], imageUrl: defaultCharacterAsset },
+    { id: 'chaska-6-4', name: 'Chasca', featuredName: 'Chasca', version: '6.4', phase: 1, featuredFourStars: ['Ororon', 'Sucrose', 'Barbara'], imageUrl: defaultCharacterAsset },
+    { id: 'lyney-6-4', name: 'Lyney', featuredName: 'Lyney', version: '6.4', phase: 1, featuredFourStars: ['Ororon', 'Sucrose', 'Barbara'], imageUrl: defaultCharacterAsset },
+    { id: 'neuvillette-6-3', name: 'Neuvillette', featuredName: 'Neuvillette', version: '6.3', phase: 2, featuredFourStars: ['Illuga', 'Aino', 'Gorou'], imageUrl: defaultCharacterAsset },
+    { id: 'venti-6-2', name: 'Venti', featuredName: 'Venti', version: '6.2', phase: 1, featuredFourStars: ['Jahoda', 'Bennett', 'Faruzan'], imageUrl: defaultCharacterAsset },
   ],
   'star-rail-character': ['Acheron', 'Kafka', 'Firefly', 'Jingliu'].map((name) => ({
-    id: name.toLowerCase().replaceAll(' ', '-'), name, featuredName: name, version: 'All versions', imageUrl: defaultCharacterAsset,
+    id: name.toLowerCase().replaceAll(' ', '-'), name, featuredName: name, version: 'All versions', featuredFourStars: [], imageUrl: defaultCharacterAsset,
   })),
   'zenless-signal': ['Ellen', 'Zhu Yuan', 'Jane Doe', 'Yanagi'].map((name) => ({
-    id: name.toLowerCase().replaceAll(' ', '-'), name, featuredName: name, version: 'All versions', imageUrl: defaultCharacterAsset,
+    id: name.toLowerCase().replaceAll(' ', '-'), name, featuredName: name, version: 'All versions', featuredFourStars: [], imageUrl: defaultCharacterAsset,
   })),
   'wuwa-convene': ['Jiyan', 'Changli', 'Zhezhi', 'Camellya'].map((name) => ({
-    id: name.toLowerCase(), name, featuredName: name, version: 'All versions', imageUrl: defaultCharacterAsset,
+    id: name.toLowerCase(), name, featuredName: name, version: 'All versions', featuredFourStars: [], imageUrl: defaultCharacterAsset,
   })),
 }
 
@@ -354,8 +373,6 @@ function App() {
   const [selectedBannerId, setSelectedBannerId] = useState('nahida')
   const [selectedBannerVersion, setSelectedBannerVersion] = useState('All versions')
   const [liveGenshinBanners, setLiveGenshinBanners] = useState(bannerChoices['genshin-character'])
-  const [liveGenshinWeapons, setLiveGenshinWeapons] = useState<BannerChoice[]>([])
-  const [collectionKind, setCollectionKind] = useState<'character' | 'weapon'>('character')
   const [sourceState, setSourceState] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle')
   const [sourceMessage, setSourceMessage] = useState('')
 
@@ -383,7 +400,7 @@ function App() {
   const activeFeaturedPool = activeRules.featuredPool.length > 0 ? activeRules.featuredPool : [activeRules.featuredName]
   const activeOffBannerPool = activeRules.offBannerPool.length > 0 ? activeRules.offBannerPool : [activeRules.offBannerName]
   const activeBannerChoices = activeRules.id === 'genshin-character'
-    ? collectionKind === 'character' ? liveGenshinBanners : liveGenshinWeapons
+    ? liveGenshinBanners
     : bannerChoices[activeRules.id] ?? []
   const bannerVersions = ['All versions', ...Array.from(new Set(activeBannerChoices.map((choice) => choice.version))).sort(sortVersions)]
   const visibleBannerChoices = selectedBannerVersion === 'All versions'
@@ -407,7 +424,6 @@ function App() {
     setSourceMessage('')
     setSelectedBannerId(bannerChoices[preset.id]?.[0]?.id ?? '')
     setSelectedBannerVersion('All versions')
-    setCollectionKind('character')
   }
 
   function selectCustomPreset() {
@@ -423,9 +439,10 @@ function App() {
     setRules((current) => ({
       ...current,
       banner: `${choice.name} Banner`,
-      bannerKind: collectionKind,
+      bannerKind: 'character',
       featuredName: choice.featuredName,
       featuredPool: [choice.featuredName],
+      fourStarPool: choice.featuredFourStars,
       imageUrl: choice.imageUrl,
     }))
     resetSession()
@@ -445,40 +462,34 @@ function App() {
     }
 
     setSourceState('loading')
-    setSourceMessage('Loading the current Genshin character catalog...')
+    setSourceMessage('Refreshing banner artwork and metadata...')
 
     try {
-      async function fetchCollection(folder: 'characters' | 'weapons') {
+      async function fetchCharacters() {
         const response = await fetch(
-          `https://genshin-db-api.vercel.app/api/v5/${folder}?query=names&matchCategories=true&verboseCategories=true&resultLanguage=English`,
+          'https://genshin-db-api.vercel.app/api/v5/characters?query=names&matchCategories=true&verboseCategories=true&resultLanguage=English',
         )
-        if (!response.ok) throw new Error(`${folder} request failed`)
+        if (!response.ok) throw new Error('characters request failed')
         const payload: unknown = await response.json()
         return Array.isArray(payload)
           ? payload.filter((item): item is GenshinDbCharacter => typeof item === 'object' && item !== null)
           : []
       }
 
-      const [characterRecords, weaponRecords] = await Promise.all([
-        fetchCollection('characters'),
-        fetchCollection('weapons'),
-      ])
-      const toBannerChoices = (records: GenshinDbCharacter[]) => records
-        .filter((item) => typeof item.name === 'string')
-        .map((item) => {
-          const name = item.name as string
-          return {
-            id: name.toLowerCase().replaceAll(' ', '-'),
-            name,
-            featuredName: name,
-            version: item.version || 'Catalog',
-            imageUrl: item.images?.hoyowiki_icon || item.images?.icon || defaultCharacterAsset,
-          }
-        })
-      const characterBanners = toBannerChoices(characterRecords)
-      const weaponBanners = toBannerChoices(weaponRecords)
-
-      if (characterBanners.length === 0 || weaponBanners.length === 0) throw new Error('Empty catalog returned')
+      const characterRecords = await fetchCharacters()
+      const metadataByName = new Map(
+        characterRecords
+          .filter((item) => typeof item.name === 'string')
+          .map((item) => [item.name?.toLowerCase(), item]),
+      )
+      const characterBanners = bannerChoices['genshin-character'].map((choice) => {
+        const metadata = metadataByName.get(choice.name.toLowerCase())
+        return {
+          ...choice,
+          imageUrl: metadata?.images?.hoyowiki_icon || metadata?.images?.icon || choice.imageUrl,
+        }
+      })
+      if (characterBanners.length === 0) throw new Error('Empty catalog returned')
 
       setRules((current) => ({
         ...current,
@@ -486,13 +497,12 @@ function App() {
         featuredName: characterBanners[0].featuredName,
         featuredPool: [characterBanners[0].featuredName],
         imageUrl: characterBanners[0].imageUrl,
-        fourStarPool: characterBanners.map((choice) => choice.name),
+        fourStarPool: characterBanners[0].featuredFourStars,
       }))
       setLiveGenshinBanners(characterBanners)
-      setLiveGenshinWeapons(weaponBanners)
       setSelectedBannerId(characterBanners[0].id)
       setSourceState('loaded')
-      setSourceMessage(`Loaded ${characterBanners.length} characters and ${weaponBanners.length} weapons from genshin-db.`)
+      setSourceMessage(`Loaded ${characterBanners.length} patch banner records with metadata.`)
     } catch {
       setSourceState('error')
       setSourceMessage('Could not reach the API. The built-in preset is still available.')
@@ -679,7 +689,7 @@ function App() {
               {sourceState === 'loading'
                 ? 'Loading...'
                 : activeRules.id === 'genshin-character'
-                  ? 'Load live roster'
+                  ? 'Refresh banner data'
                   : 'Source linked'}
             </button>
             {sourceMessage && <small className={`source-message ${sourceState}`}>{sourceMessage}</small>}
@@ -720,32 +730,10 @@ function App() {
         </section>
 
         <section className="panel summon-panel" aria-labelledby="summon-heading">
-          {activeRules.id === 'genshin-character' && (liveGenshinBanners.length > 0 || liveGenshinWeapons.length > 0) && (
+          {activeBannerChoices.length > 0 && (
             <div className="banner-picker" aria-label="Choose a banner">
               <div className="banner-picker-heading">
                 <span className="eyebrow">Choose banner</span>
-                <div className="collection-toggle" role="tablist" aria-label="Collection type">
-                  <button
-                    className={collectionKind === 'character' ? 'active' : ''}
-                    type="button"
-                    onClick={() => {
-                      setCollectionKind('character')
-                      setSelectedBannerVersion('All versions')
-                    }}
-                  >
-                    Characters
-                  </button>
-                  <button
-                    className={collectionKind === 'weapon' ? 'active' : ''}
-                    type="button"
-                    onClick={() => {
-                      setCollectionKind('weapon')
-                      setSelectedBannerVersion('All versions')
-                    }}
-                  >
-                    Weapons
-                  </button>
-                </div>
                 <label>
                   <span>Version</span>
                   <select value={selectedBannerVersion} onChange={(event) => setSelectedBannerVersion(event.target.value)}>
@@ -762,7 +750,7 @@ function App() {
                     onClick={() => selectBanner(choice)}
                   >
                     <span>{choice.name}</span>
-                    <small>{selectedBannerId === choice.id ? 'Selected' : `Version ${choice.version}`}</small>
+                    <small>{selectedBannerId === choice.id ? 'Selected' : `Patch ${choice.version} · Phase ${choice.phase ?? '-'}`}</small>
                     </button>
                 ))}
                 {visibleBannerChoices.length === 0 && (

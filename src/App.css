@@ -1462,6 +1462,13 @@ select {
   color: #ff7d87;
 }
 
+.banner-choice .collab-label {
+  color: #ff5d6c;
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
 .summon-stage {
   min-height: 300px;
   grid-template-columns: 190px minmax(0, 1fr);

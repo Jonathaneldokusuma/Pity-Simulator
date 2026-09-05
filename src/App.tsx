@@ -1069,6 +1069,7 @@ function App() {
                     onClick={() => selectBanner(choice)}
                   >
                     <span>{choice.name}</span>
+                    {choice.isCollab && <strong className="collab-label">COLLAB</strong>}
                     <small>{selectedBannerId === choice.id ? 'Selected' : `Patch ${choice.version} · Phase ${choice.phase ?? '-'}`}</small>
                     </button>
                 ))}

@@ -1,6 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <defs><linearGradient id="astrite" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f6fbff"/><stop offset=".5" stop-color="#a5e8e5"/><stop offset="1" stop-color="#3b8d9d"/></linearGradient></defs>
-  <path fill="#183d4b" d="M32 4 57 18v28L32 60 7 46V18z"/>
-  <path fill="url(#astrite)" d="m32 11 17 10v22L32 53 15 43V21z"/>
-  <path fill="#fff" opacity=".82" d="M32 15 37 29l13 3-13 4-5 13-5-13-13-4 13-3z"/>
+  <defs>
+    <linearGradient id="astrite-core" x1="15" y1="8" x2="50" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#e9ffff"/>
+      <stop offset=".38" stop-color="#8de8ff"/>
+      <stop offset="1" stop-color="#5277d8"/>
+    </linearGradient>
+    <linearGradient id="astrite-side" x1="12" y1="12" x2="54" y2="52" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5ce4f3"/>
+      <stop offset="1" stop-color="#3152a9"/>
+    </linearGradient>
+  </defs>
+  <path fill="#182f70" d="m32 3 11 8 14 2 3 15-5 14-13 8-10 12-10-12-13-8-5-14 3-15 14-2z"/>
+  <path fill="url(#astrite-core)" d="m32 8 9 8 13 2 2 11-5 12-11 6-8 10-8-10-11-6-5-12 2-11 13-2z"/>
+  <path fill="url(#astrite-side)" d="m32 8 9 8 13 2-17 8-5 31-8-10-11-6-5-12 2-11 13-2z" opacity=".86"/>
+  <path fill="#f5ffff" d="m32 15 4 12 12 4-12 4-4 14-4-14-12-4 12-4z" opacity=".9"/>
+  <path fill="#fff" d="m44 8 2 6 6 2-6 2-2 7-2-7-6-2 6-2z" opacity=".78"/>
 </svg>

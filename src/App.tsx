@@ -286,13 +286,37 @@ const bannerChoices: Record<string, BannerChoice[]> = {
   })),
 }
 
-const weaponBannerChoices: BannerChoice[] = [
+const genshinWeaponPhaseBanners: BannerChoice[] = [
   { id: 'weapons-2-1-p1', name: 'Engulfing Lightning + The Unforged', featuredName: 'Engulfing Lightning', featuredNames: ['Engulfing Lightning', 'The Unforged'], version: '2.1', phase: 1, featuredFourStars: ['The Alley Flash', 'The Bell', 'The Stringless'], imageUrl: defaultCharacterAsset },
   { id: 'weapons-2-5-p2', name: 'Engulfing Lightning + Everlasting Moonglow', featuredName: 'Engulfing Lightning', featuredNames: ['Engulfing Lightning', 'Everlasting Moonglow'], version: '2.5', phase: 2, featuredFourStars: ['The Widsith', 'Favonius Lance', 'Eye of Perception'], imageUrl: defaultCharacterAsset },
   { id: 'weapons-3-3-p2', name: 'Engulfing Lightning + Haran Geppaku Futsu', featuredName: 'Engulfing Lightning', featuredNames: ['Engulfing Lightning', 'Haran Geppaku Futsu'], version: '3.3', phase: 2, featuredFourStars: ['Favonius Sword', 'Dragon\'s Bane', 'Favonius Warbow'], imageUrl: defaultCharacterAsset },
   { id: 'weapons-4-3-p2', name: 'Engulfing Lightning + Thundering Pulse', featuredName: 'Engulfing Lightning', featuredNames: ['Engulfing Lightning', 'Thundering Pulse'], version: '4.3', phase: 2, featuredFourStars: ['Lithic Spear', 'Akuoumaru', 'Rust'], imageUrl: defaultCharacterAsset },
   { id: 'weapons-5-0-p2', name: 'Engulfing Lightning + Fang of the Mountain King', featuredName: 'Engulfing Lightning', featuredNames: ['Engulfing Lightning', 'Fang of the Mountain King'], version: '5.0', phase: 2, featuredFourStars: ['Xiphos\' Moonlight', 'Sacrificial Greatsword', 'The Stringless'], imageUrl: defaultCharacterAsset },
 ]
+
+const weaponBannerChoices = splitGenshinBanners(genshinWeaponPhaseBanners)
+const genshinWeaponReleaseVersions = new Map<string, string>([
+  ['engulfing lightning', '2.1'],
+  ['the unforged', '1.1'],
+  ['everlasting moonglow', '2.1'],
+  ['haran geppaku futsu', '2.6'],
+  ['thundering pulse', '2.0'],
+  ['fang of the mountain king', '5.0'],
+  ['the alley flash', '1.0'],
+  ['the bell', '1.0'],
+  ['the stringless', '1.0'],
+  ['the widsith', '1.0'],
+  ['favonius lance', '1.0'],
+  ['eye of perception', '1.0'],
+  ['favonius sword', '1.0'],
+  ["dragon's bane", '1.0'],
+  ['favonius warbow', '1.0'],
+  ['lithic spear', '1.3'],
+  ['akuoumaru', '2.2'],
+  ['rust', '1.0'],
+  ["xiphos' moonlight", '3.1'],
+  ['sacrificial greatsword', '1.0'],
+])
 
 // Keep every released patch selectable even when a source has not published a
 // phase record yet. This prevents the picker from silently hiding versions.
@@ -528,7 +552,8 @@ function App() {
 
   function isAvailableAtVersion(name: string, version: string | undefined) {
     if (!version || activeRules.id !== 'genshin-character') return true
-    const released = genshinReleaseVersions.get(name.toLowerCase())
+    const releaseMap = selectedWishType === 'weapon' ? genshinWeaponReleaseVersions : genshinReleaseVersions
+    const released = releaseMap.get(name.toLowerCase())
     if (!released) return true
     return sortVersions(released, version) >= 0
   }

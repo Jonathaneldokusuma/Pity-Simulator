@@ -57,6 +57,7 @@ type BannerChoice = {
   featuredFourStars: string[]
   featuredNames?: string[]
   imageUrls?: string[]
+  isCollab?: boolean
 }
 
 type GenshinDbCharacter = {
@@ -90,6 +91,7 @@ const wuwaStandardWeaponPool = ['Ages of Harvest', 'Verity\'s Handle', 'Lustrous
 const wuwaFourStarPool = ['Baizhi', 'Yangyang', 'Chixia', 'Sanhua', 'Mortefi', 'Danjin', 'Taoqi', 'Yuanwu', 'Aalto', 'Youhu', 'Baizhi']
 const wuwaThreeStarPool = ['Originite: Type IV', 'Originite: Type II', 'Originite: Type I', 'Sword of Night', 'Training Broadblade']
 const wuwaWeaponThreeStarPool = ['Originite: Type IV', 'Originite: Type II', 'Originite: Type I', 'Tyro Sword', 'Tyro Broadblade']
+const collaborationNames = new Set(['aloy', 'archer', 'saber', 'rin tohsaka', 'gilgamesh', 'lucy', 'rebecca', 'lucilla'])
 
 type PullResult = {
   id: string
@@ -315,6 +317,7 @@ const genshinCharacterBanners: BannerChoice[] = sourcedCharacterBanners.map((sou
   phase: source.phase,
   imageUrl: sourceImageUrl(source.imageUrl),
   featuredFourStars: verifiedFourStars.get(sourceBannerKey(source.featuredName, source.version, source.phase)) ?? [],
+  isCollab: collaborationNames.has(source.featuredName.toLowerCase()),
 }))
 
 const starRailCharacterBanners: BannerChoice[] = starRailCharacterRecords.map((source) => ({
@@ -323,6 +326,7 @@ const starRailCharacterBanners: BannerChoice[] = starRailCharacterRecords.map((s
   featuredNames: [source.featuredName],
   featuredFourStars: [],
   imageUrl: starRailCharacterImages[source.featuredName.toLowerCase()] ?? source.imageUrl,
+  isCollab: collaborationNames.has(source.featuredName.toLowerCase()),
 }))
 
 const starRailWeaponBanners: BannerChoice[] = starRailWeaponRecords.map((source) => ({
@@ -337,6 +341,7 @@ const wuwaCharacterBanners: BannerChoice[] = wuwaCharacterRecords.map((source) =
   name: source.featuredName,
   featuredNames: [source.featuredName],
   featuredFourStars: [],
+  isCollab: collaborationNames.has(source.featuredName.toLowerCase()),
 }))
 
 const wuwaWeaponBanners: BannerChoice[] = wuwaWeaponRecords.map((source) => ({
@@ -1058,7 +1063,7 @@ function App() {
               <div className="banner-choice-grid">
                 {visibleBannerChoices.map((choice) => (
                   <button
-                    className={`banner-choice ${selectedBannerId === choice.id ? 'active' : ''}`}
+                    className={`banner-choice ${selectedBannerId === choice.id ? 'active' : ''} ${choice.isCollab ? 'collab' : ''}`}
                     key={choice.id}
                     type="button"
                     onClick={() => selectBanner(choice)}

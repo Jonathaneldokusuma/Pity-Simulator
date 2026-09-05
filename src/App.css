@@ -1142,6 +1142,19 @@ select {
   box-shadow: inset 0 0 0 1px var(--rule-accent);
 }
 
+.banner-choice.collab {
+  border-color: #d85b63;
+  color: #9d2835;
+  background: #fff1f2;
+}
+
+.banner-choice.collab:hover,
+.banner-choice.collab.active {
+  border-color: #e33f4d;
+  background: #ffe0e3;
+  box-shadow: inset 0 0 0 1px #e33f4d;
+}
+
 .banner-choice span {
   overflow: hidden;
   max-width: 100%;
@@ -1435,6 +1448,18 @@ select {
 .banner-choice small {
   color: var(--teal);
   font-size: 0.58rem;
+}
+
+.banner-choice.collab,
+.banner-choice.collab:hover,
+.banner-choice.collab.active {
+  border-color: #d84c59;
+  color: #ff8f98;
+  background: #321820;
+}
+
+.banner-choice.collab small {
+  color: #ff7d87;
 }
 
 .summon-stage {

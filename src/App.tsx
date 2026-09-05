@@ -116,7 +116,7 @@ const presets: BannerRules[] = [
     featuredPool: ['Nahida', 'Furina', 'Yelan', 'Kazuha'],
     offBannerPool: ['Jean', 'Diluc', 'Mona', 'Keqing', 'Tighnari', 'Dehya', 'Qiqi'],
     fourStarPool: ['Xingqiu', 'Fischl', 'Bennett', 'Sucrose', 'Diona', 'Rosaria', 'Beidou'],
-    threeStarPool: ['Traveler gear', 'Slingshot', 'Magic Guide', 'Sharpshooter\'s Oath', 'Black Tassel'],
+    threeStarPool: ["Traveler's Handy Sword", 'Slingshot', 'Magic Guide', "Sharpshooter's Oath", 'Black Tassel'],
     imageUrl: defaultCharacterAsset,
     baseFiveRate: 0.6,
     softPityStart: 74,

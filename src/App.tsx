@@ -69,6 +69,8 @@ type GenshinDbCharacter = {
 }
 
 const defaultCharacterAsset = '/summon-prism.svg'
+const genshinCharacterFourStarFallback = ['Xiangling', 'Barbara', 'Noelle', 'Fischl', 'Sucrose']
+const genshinWeaponFourStarFallback = ['Favonius Sword', 'The Stringless', 'Dragon\'s Bane', 'The Bell', 'Sacrificial Bow']
 
 type PullResult = {
   id: string
@@ -585,9 +587,9 @@ function App() {
     return sortVersions(released, version) >= 0
   }
 
-  function availablePool(pool: string[], fallback: string) {
+  function availablePool(pool: string[], fallback: string | string[]) {
     const available = pool.filter((name) => isAvailableAtVersion(name, activeRules.bannerVersion))
-    return available.length > 0 ? available : [fallback]
+    return available.length > 0 ? available : Array.isArray(fallback) ? fallback : [fallback]
   }
 
   useEffect(() => {
@@ -701,7 +703,10 @@ function App() {
     const runRules = activeRules
     const featuredPool = availablePool(runRules.featuredPool, runRules.featuredName)
     const offBannerPool = availablePool(runRules.offBannerPool, runRules.offBannerName)
-    const fourStarPool = availablePool(runRules.fourStarPool, '4-star reward')
+    const fourStarFallback = runRules.id === 'genshin-character'
+      ? selectedWishType === 'weapon' ? genshinWeaponFourStarFallback : genshinCharacterFourStarFallback
+      : '4-star reward'
+    const fourStarPool = availablePool(runRules.fourStarPool, fourStarFallback)
     const threeStarPool = availablePool(runRules.threeStarPool, '3-star reward')
     const limit = stopOnFeatured ? 500 : requestedPulls
     const batch: PullResult[] = []

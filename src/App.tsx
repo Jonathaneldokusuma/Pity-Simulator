@@ -17,6 +17,7 @@ import {
 import './App.css'
 import { sourcedCharacterBanners, sourcedWeaponBanners } from './genshinHistory'
 import { starRailCharacterRecords, starRailWeaponRecords } from './starRailHistory'
+import { starRailRewardImages } from './starRailAssets'
 
 type BannerRules = {
   id: string
@@ -82,7 +83,7 @@ const genshinStandardWeaponPool = ['Aquila Favonia', 'Skyward Blade', 'Skyward P
 const genshinWeaponThreeStarPool = ['Cool Steel', 'Raven Bow', 'White Iron Greatsword', 'Black Tassel', 'Magic Guide']
 const starRailStandardLightConePool = ['Night on the Milky Way', 'In the Name of the World', 'Moment of Victory', 'Something Irreplaceable', 'But the Battle Isn\'t Over', 'Time Waits for No One', 'Sleep Like the Dead']
 const starRailFourStarLightConePool = ['Good Night and Sleep Well', 'Memories of the Past', 'The Moles Welcome You', 'A Secret Vow', 'Dance! Dance! Dance!', 'Resolution Shines As Pearls of Sweat']
-const starRailThreeStarPool = ['Collapsing Sky', 'Void', 'Cornucopia', 'Data Bank', 'Adversarial']
+const starRailThreeStarPool = ['Arrows', 'Cornucopia', 'Collapsing Sky', 'Void', 'Chorus', 'Data Bank', 'Darting Arrow', 'Defense', 'Fine Fruit', 'Hidden Shadow', 'Lingering Tear', 'Loop', 'Mediation', 'Meshing Cogs', 'Multiplication', 'Mutual Demise', 'Passkey', 'Pioneering', 'Reminiscence', 'Sagacity', 'Shadowburn', 'Shattered Home', 'Sneering']
 const starRailFourStarCharacterPool = ['March 7th', 'Dan Heng', 'Asta', 'Arlan', 'Herta', 'Hook', 'Natasha', 'Pela', 'Sampo', 'Serval', 'Sushang', 'Tingyun', 'Qingque', 'Luka', 'Lynx', 'Guinaifen', 'Misha', 'Xueyi', 'Gallagher', 'Moze', 'Yukong', 'Hanya']
 
 type PullResult = {
@@ -504,6 +505,7 @@ function App() {
       ...sourcedWeaponBanners.map((item) => [item.featuredName.toLowerCase(), sourceImageUrl(item.imageUrl)] as const),
       ...starRailCharacterRecords.map((item) => [item.featuredName.toLowerCase(), item.imageUrl] as const),
       ...starRailWeaponRecords.map((item) => [item.featuredName.toLowerCase(), item.imageUrl] as const),
+      ...Object.entries(starRailRewardImages),
     ]),
   )
   const [genshinReleaseVersions, setGenshinReleaseVersions] = useState<Map<string, string>>(new Map())
@@ -588,8 +590,10 @@ function App() {
         ? activeRules.id === 'genshin-character' ? genshinStandardWeaponPool : starRailStandardLightConePool
         : current.offBannerPool,
       fourStarPool: choice.featuredFourStars,
-      threeStarPool: wishType === 'weapon'
-        ? activeRules.id === 'genshin-character' ? genshinWeaponThreeStarPool : starRailThreeStarPool
+      threeStarPool: activeRules.id === 'genshin-character' && wishType === 'weapon'
+        ? genshinWeaponThreeStarPool
+        : activeRules.id === 'star-rail-character'
+          ? starRailThreeStarPool
         : current.threeStarPool,
       imageUrl: choice.imageUrl,
       bannerVersion: choice.version,

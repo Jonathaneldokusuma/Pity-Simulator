@@ -782,6 +782,18 @@ input[readonly] {
   background: #e9ddff;
 }
 
+.result-card.rarity-3 {
+  border-color: rgba(64, 139, 214, 0.48);
+  background:
+    linear-gradient(160deg, rgba(226, 240, 255, 0.96), #ffffff 64%),
+    #ffffff;
+}
+
+.result-card.rarity-3 .rarity-label {
+  color: #14375e;
+  background: #c5e1ff;
+}
+
 .result-card.featured {
   box-shadow: inset 0 0 0 2px var(--rule-accent);
 }
@@ -1672,6 +1684,26 @@ select {
 .result-card.rarity-4 .rarity-label {
   color: #d7e7ed;
   background: #315368;
+}
+
+.result-card.rarity-3 {
+  border-color: #2d6eab;
+  background: #101e2b;
+}
+
+.result-card.rarity-3 .rarity-label {
+  color: #cce7ff;
+  background: #1e5b8c;
+}
+
+.result-card.rarity-4 {
+  border-color: #8d5bbd;
+  background: #1b1627;
+}
+
+.result-card.rarity-4 .rarity-label {
+  color: #f0dcff;
+  background: #70429b;
 }
 
 table {

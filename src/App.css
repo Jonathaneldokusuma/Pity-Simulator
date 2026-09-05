@@ -500,9 +500,9 @@ input:focus-visible {
 }
 
 .currency-control-icon {
-  width: 24px;
-  height: 24px;
-  flex: 0 0 24px;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
   object-fit: contain;
 }
 

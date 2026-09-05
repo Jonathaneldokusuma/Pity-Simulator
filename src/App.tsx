@@ -71,7 +71,7 @@ const brandLogoAsset = '/gacha-logo.png'
 const genshinPrimogemAsset = '/genshin-primogem.png'
 const currencyAssetByPreset: Record<string, string> = {
   'genshin-character': genshinPrimogemAsset,
-  'star-rail-character': '/star-rail-stellar-jade.svg',
+  'star-rail-character': '/star-rail-stellar-jade.png',
   'zenless-signal': '/zenless-polychrome.svg',
   'wuwa-convene': '/wuthering-waves-astrite.svg',
 }

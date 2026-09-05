@@ -49,6 +49,7 @@ type BannerChoice = {
   name: string
   featuredName: string
   imageUrl: string
+  bannerVersion?: string
   version: string
   phase?: 1 | 2
   featuredFourStars: string[]
@@ -417,6 +418,7 @@ function App() {
   const [selectedBannerVersion, setSelectedBannerVersion] = useState('All versions')
   const [liveGenshinBanners, setLiveGenshinBanners] = useState(bannerChoices['genshin-character'])
   const [genshinImages, setGenshinImages] = useState<Map<string, string>>(new Map())
+  const [genshinReleaseVersions, setGenshinReleaseVersions] = useState<Map<string, string>>(new Map())
   const [selectedWishType, setSelectedWishType] = useState<'character' | 'weapon'>('character')
   const [sourceState, setSourceState] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle')
   const [sourceMessage, setSourceMessage] = useState('')
@@ -453,6 +455,7 @@ function App() {
   const visibleBannerChoices = selectedBannerVersion === 'All versions'
     ? activeBannerChoices
     : activeBannerChoices.filter((choice) => choice.version === selectedBannerVersion)
+  const hasVersionBanner = selectedBannerVersion === 'All versions' || visibleBannerChoices.length > 0
 
   function resetSession() {
     setPity5(0)
@@ -482,22 +485,57 @@ function App() {
     setSourceMessage('')
   }
 
-  function selectBanner(choice: BannerChoice) {
+  function selectBanner(choice: BannerChoice, wishType = selectedWishType) {
     setSelectedBannerId(choice.id)
     setRules((current) => ({
       ...current,
       banner: `${choice.name} Banner`,
-      bannerKind: selectedWishType,
+      bannerKind: wishType,
       featuredName: choice.featuredName,
       featuredPool: choice.featuredNames ?? [choice.featuredName],
       fourStarPool: choice.featuredFourStars,
       imageUrl: choice.imageUrl,
+      bannerVersion: choice.version,
+    }))
+    resetSession()
+  }
+
+  function changeBannerVersion(version: string) {
+    setSelectedBannerVersion(version)
+    const choices = version === 'All versions'
+      ? activeBannerChoices
+      : activeBannerChoices.filter((choice) => choice.version === version)
+    if (choices[0]) {
+      selectBanner(choices[0])
+      return
+    }
+    setSelectedBannerId('')
+    setRules((current) => ({
+      ...current,
+      banner: `${version} banner data unavailable`,
+      bannerVersion: version,
+      featuredName: 'No banner loaded',
+      featuredPool: [],
+      fourStarPool: [],
+      imageUrl: defaultCharacterAsset,
     }))
     resetSession()
   }
 
   function getRewardImage(name: string) {
     return genshinImages.get(name.toLowerCase()) || ''
+  }
+
+  function isAvailableAtVersion(name: string, version: string | undefined) {
+    if (!version || activeRules.id !== 'genshin-character') return true
+    const released = genshinReleaseVersions.get(name.toLowerCase())
+    if (!released) return true
+    return sortVersions(released, version) >= 0
+  }
+
+  function availablePool(pool: string[], fallback: string) {
+    const available = pool.filter((name) => isAvailableAtVersion(name, activeRules.bannerVersion))
+    return available.length > 0 ? available : [fallback]
   }
 
   useEffect(() => {
@@ -564,6 +602,15 @@ function App() {
         if (image) imageMap.set(label, image)
       })
       setGenshinImages(imageMap)
+      const releaseMap = new Map(characterRecords.flatMap((item) => {
+        if (!item.name || !item.version) return []
+        return [[item.name.toLowerCase(), item.version.replace(/^version\s*/i, '')] as [string, string]]
+      }))
+      Object.entries(aliases).forEach(([label, canonical]) => {
+        const version = releaseMap.get(canonical.toLowerCase())
+        if (version) releaseMap.set(label, version)
+      })
+      setGenshinReleaseVersions(releaseMap)
 
       setRules((current) => ({
         ...current,
@@ -572,6 +619,7 @@ function App() {
         featuredPool: characterBanners[0].featuredNames ?? [characterBanners[0].featuredName],
         imageUrl: characterBanners[0].imageUrl,
         fourStarPool: characterBanners[0].featuredFourStars,
+        bannerVersion: characterBanners[0].version,
       }))
       setLiveGenshinBanners(characterBanners)
       setSelectedBannerId(characterBanners[0].id)
@@ -599,6 +647,10 @@ function App() {
 
   function performPulls(requestedPulls: number, stopOnFeatured = false) {
     const runRules = activeRules
+    const featuredPool = availablePool(runRules.featuredPool, runRules.featuredName)
+    const offBannerPool = availablePool(runRules.offBannerPool, runRules.offBannerName)
+    const fourStarPool = availablePool(runRules.fourStarPool, '4-star reward')
+    const threeStarPool = availablePool(runRules.threeStarPool, '3-star reward')
     const limit = stopOnFeatured ? 500 : requestedPulls
     const batch: PullResult[] = []
     let nextPity5 = pity5
@@ -623,8 +675,8 @@ function App() {
             : Math.random() * 100 < runRules.guaranteeRate
 
         const rewardName = wonFeatured
-          ? pickRewardName(runRules.featuredPool, runRules.featuredName)
-          : pickRewardName(runRules.offBannerPool, runRules.offBannerName)
+          ? pickRewardName(featuredPool, runRules.featuredName)
+          : pickRewardName(offBannerPool, runRules.offBannerName)
         batch.push({
           id: resultId(pullNumber),
           number: pullNumber,
@@ -658,7 +710,7 @@ function App() {
       const hitFourStar = Math.random() * 100 < fourChance
 
       if (hitFourStar) {
-        const rewardName = pickRewardName(runRules.fourStarPool, '4-star reward')
+        const rewardName = pickRewardName(fourStarPool, '4-star reward')
         batch.push({
           id: resultId(pullNumber),
           number: pullNumber,
@@ -674,7 +726,7 @@ function App() {
         nextTotals.fourStars += 1
         nextPity4 = 0
       } else {
-        const rewardName = pickRewardName(runRules.threeStarPool, '3-star reward')
+        const rewardName = pickRewardName(threeStarPool, '3-star reward')
         batch.push({
           id: resultId(pullNumber),
           number: pullNumber,
@@ -820,6 +872,8 @@ function App() {
                       onClick={() => {
                         setSelectedWishType(wishType)
                         setSelectedBannerVersion('All versions')
+                        const choices = wishType === 'character' ? liveGenshinBanners : weaponBannerChoices
+                        if (choices[0]) selectBanner(choices[0], wishType)
                       }}
                     >
                       {wishType === 'character' ? 'Characters' : 'Weapons'}
@@ -828,7 +882,7 @@ function App() {
                 </div>
                 <label>
                   <span>Version</span>
-                  <select value={selectedBannerVersion} onChange={(event) => setSelectedBannerVersion(event.target.value)}>
+                  <select value={selectedBannerVersion} onChange={(event) => changeBannerVersion(event.target.value)}>
                     {bannerVersions.map((version) => <option key={version}>{version}</option>)}
                   </select>
                 </label>
@@ -846,7 +900,7 @@ function App() {
                     </button>
                 ))}
                 {visibleBannerChoices.length === 0 && (
-                  <p className="banner-empty">No entries for this version.</p>
+                  <p className="banner-empty">No sourced phase data for {selectedBannerVersion} yet. Pulls are disabled until a real banner record is loaded.</p>
                 )}
               </div>
             </div>
@@ -906,15 +960,15 @@ function App() {
           </div>
 
           <div className="pull-actions">
-            <button className="button primary" type="button" onClick={() => performPulls(1)}>
+            <button className="button primary" type="button" disabled={!hasVersionBanner} onClick={() => performPulls(1)}>
               <Sparkles size={18} aria-hidden="true" />
               1 Pull
             </button>
-            <button className="button primary" type="button" onClick={() => performPulls(10)}>
+            <button className="button primary" type="button" disabled={!hasVersionBanner} onClick={() => performPulls(10)}>
               <Dice5 size={18} aria-hidden="true" />
               10 Pulls
             </button>
-            <button className="button accent" type="button" onClick={() => performPulls(1, true)}>
+            <button className="button accent" type="button" disabled={!hasVersionBanner} onClick={() => performPulls(1, true)}>
               <WandSparkles size={18} aria-hidden="true" />
               Until Featured
             </button>

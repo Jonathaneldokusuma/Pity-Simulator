@@ -658,7 +658,7 @@ function App() {
           imageUrls: (choice.featuredNames ?? [choice.featuredName]).map((name) => {
             const nameKey = aliases[name.toLowerCase()] || name
             const item = metadataByName.get(nameKey.toLowerCase())
-            return item?.images?.hoyowiki_icon || item?.images?.icon || defaultCharacterAsset
+            return item?.images?.hoyowiki_icon || item?.images?.icon || choice.imageUrl
           }),
         }
       })

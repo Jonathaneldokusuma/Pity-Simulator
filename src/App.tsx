@@ -17,6 +17,7 @@ import {
   Zap,
 } from 'lucide-react'
 import './App.css'
+import { sourcedCharacterBanners, sourcedWeaponBanners } from './genshinHistory'
 
 type BannerRules = {
   id: string
@@ -51,7 +52,7 @@ type BannerChoice = {
   imageUrl: string
   bannerVersion?: string
   version: string
-  phase?: 1 | 2
+  phase?: 1 | 2 | 3
   featuredFourStars: string[]
   featuredNames?: string[]
   imageUrls?: string[]
@@ -271,7 +272,29 @@ const splitGenshinBanners = (phases: BannerChoice[]) => phases.flatMap((phase) =
   })),
 )
 
-const genshinCharacterBanners = splitGenshinBanners(genshinPhaseBanners)
+const manualGenshinCharacterBanners = splitGenshinBanners(genshinPhaseBanners)
+
+function sourceBannerKey(name: string, version: string, phase: number) {
+  return `${version}-${phase}-${name.toLowerCase().replace(/^kaedehara |^sangonomiya /, '')}`
+}
+
+const verifiedFourStars = new Map(
+  manualGenshinCharacterBanners.map((choice) => [
+    sourceBannerKey(choice.featuredName, choice.version, choice.phase ?? 1),
+    choice.featuredFourStars,
+  ]),
+)
+
+function sourceImageUrl(imageUrl: string) {
+  return imageUrl.startsWith('/') ? `https://bannerhistory.app${imageUrl}` : imageUrl
+}
+
+const genshinCharacterBanners: BannerChoice[] = sourcedCharacterBanners.map((source) => ({
+  ...source,
+  phase: source.phase,
+  imageUrl: sourceImageUrl(source.imageUrl),
+  featuredFourStars: verifiedFourStars.get(sourceBannerKey(source.featuredName, source.version, source.phase)) ?? [],
+}))
 
 const bannerChoices: Record<string, BannerChoice[]> = {
   'genshin-character': genshinCharacterBanners,
@@ -294,7 +317,16 @@ const genshinWeaponPhaseBanners: BannerChoice[] = [
   { id: 'weapons-5-0-p2', name: 'Engulfing Lightning + Fang of the Mountain King', featuredName: 'Engulfing Lightning', featuredNames: ['Engulfing Lightning', 'Fang of the Mountain King'], version: '5.0', phase: 2, featuredFourStars: ['Xiphos\' Moonlight', 'Sacrificial Greatsword', 'The Stringless'], imageUrl: defaultCharacterAsset },
 ]
 
-const weaponBannerChoices = splitGenshinBanners(genshinWeaponPhaseBanners)
+const manualWeaponBannerChoices = splitGenshinBanners(genshinWeaponPhaseBanners)
+const genshinWeaponBanners: BannerChoice[] = sourcedWeaponBanners.map((source) => ({
+  ...source,
+  phase: source.phase,
+  imageUrl: sourceImageUrl(source.imageUrl),
+  featuredFourStars: manualWeaponBannerChoices.find((choice) =>
+    choice.featuredName === source.featuredName && choice.version === source.version && choice.phase === source.phase,
+  )?.featuredFourStars ?? [],
+}))
+const weaponBannerChoices = genshinWeaponBanners
 const genshinWeaponReleaseVersions = new Map<string, string>([
   ['engulfing lightning', '2.1'],
   ['the unforged', '1.1'],
@@ -320,14 +352,9 @@ const genshinWeaponReleaseVersions = new Map<string, string>([
 
 // Keep every released patch selectable even when a source has not published a
 // phase record yet. This prevents the picker from silently hiding versions.
-const genshinVersions = [
-  ...Array.from({ length: 7 }, (_, index) => `1.${index}`),
-  ...Array.from({ length: 9 }, (_, index) => `2.${index}`),
-  ...Array.from({ length: 9 }, (_, index) => `3.${index}`),
-  ...Array.from({ length: 9 }, (_, index) => `4.${index}`),
-  ...Array.from({ length: 9 }, (_, index) => `5.${index}`),
-  ...Array.from({ length: 8 }, (_, index) => `6.${index}`),
-]
+const genshinVersions = Array.from(new Set(
+  [...sourcedCharacterBanners, ...sourcedWeaponBanners].map((banner) => banner.version),
+))
 
 function sortVersions(first: string, second: string) {
   const firstParts = first.split('.').map(Number)

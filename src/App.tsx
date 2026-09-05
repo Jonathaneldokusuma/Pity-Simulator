@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import './App.css'
 import { sourcedCharacterBanners, sourcedWeaponBanners } from './genshinHistory'
+import { starRailCharacterRecords, starRailWeaponRecords } from './starRailHistory'
 
 type BannerRules = {
   id: string
@@ -50,7 +51,7 @@ type BannerChoice = {
   featuredName: string
   imageUrl: string
   version: string
-  phase?: 1 | 2 | 3
+  phase?: number
   featuredFourStars: string[]
   featuredNames?: string[]
   imageUrls?: string[]
@@ -79,6 +80,10 @@ const genshinCharacterFourStarFallback = ['Xiangling', 'Barbara', 'Noelle', 'Fis
 const genshinWeaponFourStarFallback = ['Favonius Sword', 'The Stringless', 'Dragon\'s Bane', 'The Bell', 'Sacrificial Bow']
 const genshinStandardWeaponPool = ['Aquila Favonia', 'Skyward Blade', 'Skyward Pride', 'Skyward Harp', 'Skyward Atlas', 'Lost Prayer to the Sacred Winds', 'Amos\' Bow', 'Wolf\'s Gravestone']
 const genshinWeaponThreeStarPool = ['Cool Steel', 'Raven Bow', 'White Iron Greatsword', 'Black Tassel', 'Magic Guide']
+const starRailStandardLightConePool = ['Night on the Milky Way', 'In the Name of the World', 'Moment of Victory', 'Something Irreplaceable', 'But the Battle Isn\'t Over', 'Time Waits for No One', 'Sleep Like the Dead']
+const starRailFourStarLightConePool = ['Good Night and Sleep Well', 'Memories of the Past', 'The Moles Welcome You', 'A Secret Vow', 'Dance! Dance! Dance!', 'Resolution Shines As Pearls of Sweat']
+const starRailThreeStarPool = ['Collapsing Sky', 'Void', 'Cornucopia', 'Data Bank', 'Adversarial']
+const starRailFourStarCharacterPool = ['March 7th', 'Dan Heng', 'Asta', 'Arlan', 'Herta', 'Hook', 'Natasha', 'Pela', 'Sampo', 'Serval', 'Sushang', 'Tingyun', 'Qingque', 'Luka', 'Lynx', 'Guinaifen', 'Misha', 'Xueyi', 'Gallagher', 'Moze', 'Yukong', 'Hanya']
 
 type PullResult = {
   id: string
@@ -306,11 +311,23 @@ const genshinCharacterBanners: BannerChoice[] = sourcedCharacterBanners.map((sou
   featuredFourStars: verifiedFourStars.get(sourceBannerKey(source.featuredName, source.version, source.phase)) ?? [],
 }))
 
+const starRailCharacterBanners: BannerChoice[] = starRailCharacterRecords.map((source) => ({
+  ...source,
+  name: source.featuredName,
+  featuredNames: [source.featuredName],
+  featuredFourStars: [],
+}))
+
+const starRailWeaponBanners: BannerChoice[] = starRailWeaponRecords.map((source) => ({
+  ...source,
+  name: source.featuredName,
+  featuredNames: [source.featuredName],
+  featuredFourStars: [],
+}))
+
 const bannerChoices: Record<string, BannerChoice[]> = {
   'genshin-character': genshinCharacterBanners,
-  'star-rail-character': ['Acheron', 'Kafka', 'Firefly', 'Jingliu'].map((name) => ({
-    id: name.toLowerCase().replaceAll(' ', '-'), name, featuredName: name, version: 'All versions', featuredFourStars: [], imageUrl: defaultCharacterAsset,
-  })),
+  'star-rail-character': starRailCharacterBanners,
   'zenless-signal': ['Ellen', 'Zhu Yuan', 'Jane Doe', 'Yanagi'].map((name) => ({
     id: name.toLowerCase().replaceAll(' ', '-'), name, featuredName: name, version: 'All versions', featuredFourStars: [], imageUrl: defaultCharacterAsset,
   })),
@@ -337,6 +354,10 @@ const genshinWeaponBanners: BannerChoice[] = sourcedWeaponBanners.map((source) =
   )?.featuredFourStars ?? [],
 }))
 const weaponBannerChoices = genshinWeaponBanners
+const weaponChoicesByPreset: Record<string, BannerChoice[]> = {
+  'genshin-character': weaponBannerChoices,
+  'star-rail-character': starRailWeaponBanners,
+}
 const genshinWeaponReleaseVersions = new Map<string, string>([
   ['engulfing lightning', '2.1'],
   ['the unforged', '1.1'],
@@ -479,7 +500,11 @@ function App() {
   const [selectedBannerVersion, setSelectedBannerVersion] = useState('All versions')
   const [liveGenshinBanners, setLiveGenshinBanners] = useState(bannerChoices['genshin-character'])
   const [genshinImages, setGenshinImages] = useState<Map<string, string>>(
-    () => new Map(sourcedWeaponBanners.map((item) => [item.featuredName.toLowerCase(), sourceImageUrl(item.imageUrl)])),
+    () => new Map([
+      ...sourcedWeaponBanners.map((item) => [item.featuredName.toLowerCase(), sourceImageUrl(item.imageUrl)] as const),
+      ...starRailCharacterRecords.map((item) => [item.featuredName.toLowerCase(), item.imageUrl] as const),
+      ...starRailWeaponRecords.map((item) => [item.featuredName.toLowerCase(), item.imageUrl] as const),
+    ]),
   )
   const [genshinReleaseVersions, setGenshinReleaseVersions] = useState<Map<string, string>>(new Map())
   const [selectedWishType, setSelectedWishType] = useState<'character' | 'weapon'>('character')
@@ -510,8 +535,10 @@ function App() {
   const activeBannerFace = useMemo(() => pickBannerFace(activeRules), [activeRules])
   const activeFeaturedPool = activeRules.featuredPool.length > 0 ? activeRules.featuredPool : [activeRules.featuredName]
   const activeOffBannerPool = activeRules.offBannerPool.length > 0 ? activeRules.offBannerPool : [activeRules.offBannerName]
-  const activeBannerChoices = activeRules.id === 'genshin-character'
-    ? selectedWishType === 'character' ? liveGenshinBanners : weaponBannerChoices
+  const activeBannerChoices = activeRules.id === 'genshin-character' || activeRules.id === 'star-rail-character'
+    ? selectedWishType === 'character'
+      ? activeRules.id === 'genshin-character' ? liveGenshinBanners : starRailCharacterBanners
+      : weaponChoicesByPreset[activeRules.id] ?? []
     : bannerChoices[activeRules.id] ?? []
   const bannerVersions = activeRules.id === 'genshin-character'
     ? ['All versions', ...genshinVersions.sort(sortVersions)]
@@ -557,9 +584,13 @@ function App() {
       bannerKind: wishType,
       featuredName: choice.featuredName,
       featuredPool: choice.featuredNames ?? [choice.featuredName],
-      offBannerPool: wishType === 'weapon' ? genshinStandardWeaponPool : current.offBannerPool,
+      offBannerPool: wishType === 'weapon'
+        ? activeRules.id === 'genshin-character' ? genshinStandardWeaponPool : starRailStandardLightConePool
+        : current.offBannerPool,
       fourStarPool: choice.featuredFourStars,
-      threeStarPool: wishType === 'weapon' ? genshinWeaponThreeStarPool : current.threeStarPool,
+      threeStarPool: wishType === 'weapon'
+        ? activeRules.id === 'genshin-character' ? genshinWeaponThreeStarPool : starRailThreeStarPool
+        : current.threeStarPool,
       imageUrl: choice.imageUrl,
       bannerVersion: choice.version,
     }))
@@ -730,11 +761,19 @@ function App() {
     const offBannerPool = availablePool(runRules.offBannerPool, runRules.offBannerName)
     const fourStarFallback = runRules.id === 'genshin-character'
       ? selectedWishType === 'weapon' ? genshinWeaponFourStarFallback : genshinCharacterFourStarFallback
-      : '4-star reward'
+      : runRules.id === 'star-rail-character' && selectedWishType === 'weapon'
+        ? starRailFourStarLightConePool
+        : runRules.id === 'star-rail-character'
+          ? starRailFourStarCharacterPool
+          : '4-star reward'
     const fourStarPool = availablePool(runRules.fourStarPool, fourStarFallback)
     const threeStarPool = availablePool(
       runRules.threeStarPool,
-      runRules.id === 'genshin-character' && selectedWishType === 'weapon' ? genshinWeaponThreeStarPool : '3-star reward',
+      runRules.id === 'genshin-character' && selectedWishType === 'weapon'
+        ? genshinWeaponThreeStarPool
+        : runRules.id === 'star-rail-character' && selectedWishType === 'weapon'
+          ? starRailThreeStarPool
+          : '3-star reward',
     )
     const limit = stopOnFeatured ? 500 : requestedPulls
     const batch: PullResult[] = []
@@ -948,7 +987,7 @@ function App() {
             <div className="banner-picker" aria-label="Choose a banner">
               <div className="banner-picker-heading">
                 <span className="eyebrow">Choose banner</span>
-                <div className="collection-toggle" role="tablist" aria-label="Wish type">
+                {(activeRules.id === 'genshin-character' || activeRules.id === 'star-rail-character') && <div className="collection-toggle" role="tablist" aria-label="Wish type">
                   {(['character', 'weapon'] as const).map((wishType) => (
                     <button
                       className={selectedWishType === wishType ? 'active' : ''}
@@ -957,14 +996,16 @@ function App() {
                       onClick={() => {
                         setSelectedWishType(wishType)
                         setSelectedBannerVersion('All versions')
-                        const choices = wishType === 'character' ? liveGenshinBanners : weaponBannerChoices
+                        const choices = wishType === 'character'
+                          ? activeRules.id === 'genshin-character' ? liveGenshinBanners : starRailCharacterBanners
+                          : weaponChoicesByPreset[activeRules.id] ?? []
                         if (choices[0]) selectBanner(choices[0], wishType)
                       }}
                     >
                       {wishType === 'character' ? 'Characters' : 'Weapons'}
                     </button>
                   ))}
-                </div>
+                </div>}
                 <label>
                   <span>Version</span>
                   <select value={selectedBannerVersion} onChange={(event) => changeBannerVersion(event.target.value)}>

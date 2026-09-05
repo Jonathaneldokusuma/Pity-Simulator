@@ -69,6 +69,7 @@ type GenshinDbCharacter = {
 }
 
 const defaultCharacterAsset = '/summon-prism.svg'
+const brandLogoAsset = '/gacha-logo.png'
 const genshinCharacterFourStarFallback = ['Xiangling', 'Barbara', 'Noelle', 'Fischl', 'Sucrose']
 const genshinWeaponFourStarFallback = ['Favonius Sword', 'The Stringless', 'Dragon\'s Bane', 'The Bell', 'Sacrificial Bow']
 const genshinStandardWeaponPool = ['Aquila Favonia', 'Skyward Blade', 'Skyward Pride', 'Skyward Harp', 'Skyward Atlas', 'Lost Prayer to the Sacred Winds', 'Amos\' Bow', 'Wolf\'s Gravestone']
@@ -854,7 +855,7 @@ function App() {
     <main className="app-shell" style={themeStyle}>
       <header className="app-header">
         <div className="brand-lockup">
-          <img className="brand-mark" src="/summon-prism.svg" alt="" />
+          <img className="brand-mark" src={brandLogoAsset} alt="" />
           <div>
             <p className="eyebrow">Gacha Lab</p>
             <h1>Pity Simulator</h1>

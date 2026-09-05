@@ -31,6 +31,7 @@ type BannerRules = {
   fourStarPool: string[]
   threeStarPool: string[]
   imageUrl: string
+  bannerVersion?: string
   baseFiveRate: number
   softPityStart: number
   hardPity: number
@@ -50,7 +51,6 @@ type BannerChoice = {
   name: string
   featuredName: string
   imageUrl: string
-  bannerVersion?: string
   version: string
   phase?: 1 | 2 | 3
   featuredFourStars: string[]

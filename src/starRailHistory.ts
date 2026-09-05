@@ -143,6 +143,10 @@ export const starRailCharacterRecords: StarRailBannerRecord[] = [
   { id: 'star-rail-character-4-5-p2-aventurine-waveflair-134', version: '4.5', phase: 2, featuredName: "Aventurine - Waveflair", imageUrl: "https://www.starrailbuilds.com/hsr-assets/icon/character/1513.png" },
   { id: 'star-rail-character-4-5-p1-hyacine-135', version: '4.5', phase: 1, featuredName: "Hyacine", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1409.png" },
   { id: 'star-rail-character-4-5-p1-robin-summeretto-136', version: '4.5', phase: 1, featuredName: "Robin - Summeretto", imageUrl: "https://www.starrailbuilds.com/hsr-assets/icon/character/1512.png" },
+  { id: 'star-rail-character-collab-3-4-p1-archer', version: '3.4', phase: 1, featuredName: "Archer", imageUrl: "https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/character/1015.png" },
+  { id: 'star-rail-character-collab-3-4-p2-saber', version: '3.4', phase: 2, featuredName: "Saber", imageUrl: "https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/character/1014.png" },
+  { id: 'star-rail-character-collab-4-4-p1-rin-tohsaka', version: '4.4', phase: 1, featuredName: "Rin Tohsaka", imageUrl: "https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/character/1508.png" },
+  { id: 'star-rail-character-collab-4-4-p2-gilgamesh', version: '4.4', phase: 2, featuredName: "Gilgamesh", imageUrl: "https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/character/1509.png" },
 ];
 
 export const starRailWeaponRecords: StarRailBannerRecord[] = [
@@ -282,4 +286,8 @@ export const starRailWeaponRecords: StarRailBannerRecord[] = [
   { id: 'star-rail-weapon-4-5-p2-the-finale-of-a-lie-134', version: '4.5', phase: 2, featuredName: "The Finale of a Lie", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/LightConeMediumIcon/23056.png" },
   { id: 'star-rail-weapon-4-5-p1-rise-and-sing-135', version: '4.5', phase: 1, featuredName: "Rise and Sing", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/LightConeMediumIcon/23063.png" },
   { id: 'star-rail-weapon-4-5-p1-long-may-rainbows-adorn-the-sky-136', version: '4.5', phase: 1, featuredName: "Long May Rainbows Adorn the Sky", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/LightConeMediumIcon/23042.png" },
+  { id: 'star-rail-weapon-collab-3-4-p1-the-hell-where-ideals-burn', version: '3.4', phase: 1, featuredName: "The Hell Where Ideals Burn", imageUrl: "https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/image/light_cone_portrait/23046.png" },
+  { id: 'star-rail-weapon-collab-3-4-p2-a-thankless-coronation', version: '3.4', phase: 2, featuredName: "A Thankless Coronation", imageUrl: "https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/image/light_cone_portrait/23045.png" },
+  { id: 'star-rail-weapon-collab-4-4-p1-flickering-stars', version: '4.4', phase: 1, featuredName: "Flickering Stars", imageUrl: "https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/image/light_cone_portrait/23061.png" },
+  { id: 'star-rail-weapon-collab-4-4-p2-i-am-as-you-behold', version: '4.4', phase: 2, featuredName: "I Am As You Behold", imageUrl: "https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/image/light_cone_portrait/23062.png" },
 ];

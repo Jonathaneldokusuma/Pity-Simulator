@@ -71,6 +71,8 @@ type GenshinDbCharacter = {
 const defaultCharacterAsset = '/summon-prism.svg'
 const genshinCharacterFourStarFallback = ['Xiangling', 'Barbara', 'Noelle', 'Fischl', 'Sucrose']
 const genshinWeaponFourStarFallback = ['Favonius Sword', 'The Stringless', 'Dragon\'s Bane', 'The Bell', 'Sacrificial Bow']
+const genshinStandardWeaponPool = ['Aquila Favonia', 'Skyward Blade', 'Skyward Pride', 'Skyward Harp', 'Skyward Atlas', 'Lost Prayer to the Sacred Winds', 'Amos\' Bow', 'Wolf\'s Gravestone']
+const genshinWeaponThreeStarPool = ['Cool Steel', 'Raven Bow', 'White Iron Greatsword', 'Black Tassel', 'Magic Guide']
 
 type PullResult = {
   id: string
@@ -470,7 +472,9 @@ function App() {
   const [selectedBannerId, setSelectedBannerId] = useState('6-7-p1')
   const [selectedBannerVersion, setSelectedBannerVersion] = useState('All versions')
   const [liveGenshinBanners, setLiveGenshinBanners] = useState(bannerChoices['genshin-character'])
-  const [genshinImages, setGenshinImages] = useState<Map<string, string>>(new Map())
+  const [genshinImages, setGenshinImages] = useState<Map<string, string>>(
+    () => new Map(sourcedWeaponBanners.map((item) => [item.featuredName.toLowerCase(), sourceImageUrl(item.imageUrl)])),
+  )
   const [genshinReleaseVersions, setGenshinReleaseVersions] = useState<Map<string, string>>(new Map())
   const [selectedWishType, setSelectedWishType] = useState<'character' | 'weapon'>('character')
   const [sourceState, setSourceState] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle')
@@ -546,7 +550,9 @@ function App() {
       bannerKind: wishType,
       featuredName: choice.featuredName,
       featuredPool: choice.featuredNames ?? [choice.featuredName],
+      offBannerPool: wishType === 'weapon' ? genshinStandardWeaponPool : current.offBannerPool,
       fourStarPool: choice.featuredFourStars,
+      threeStarPool: wishType === 'weapon' ? genshinWeaponThreeStarPool : current.threeStarPool,
       imageUrl: choice.imageUrl,
       bannerVersion: choice.version,
     }))
@@ -620,7 +626,19 @@ function App() {
           : []
       }
 
+      async function fetchWeapons() {
+        const response = await fetch(
+          'https://genshin-db-api.vercel.app/api/v5/weapons?query=names&matchCategories=true&verboseCategories=true&resultLanguage=English',
+        )
+        if (!response.ok) return []
+        const payload: unknown = await response.json()
+        return Array.isArray(payload)
+          ? payload.filter((item): item is GenshinDbCharacter => typeof item === 'object' && item !== null)
+          : []
+      }
+
       const characterRecords = await fetchCharacters()
+      const weaponRecords = await fetchWeapons()
       const metadataByName = new Map(
         characterRecords
           .filter((item) => typeof item.name === 'string')
@@ -646,7 +664,7 @@ function App() {
       })
       if (characterBanners.length === 0) throw new Error('Empty catalog returned')
 
-      const imageMap = new Map(characterRecords.flatMap((item) => {
+      const imageMap = new Map([...characterRecords, ...weaponRecords].flatMap((item) => {
         if (!item.name) return []
         const image = item.images?.hoyowiki_icon || item.images?.icon
         return image ? [[item.name.toLowerCase(), image] as [string, string]] : []
@@ -707,7 +725,10 @@ function App() {
       ? selectedWishType === 'weapon' ? genshinWeaponFourStarFallback : genshinCharacterFourStarFallback
       : '4-star reward'
     const fourStarPool = availablePool(runRules.fourStarPool, fourStarFallback)
-    const threeStarPool = availablePool(runRules.threeStarPool, '3-star reward')
+    const threeStarPool = availablePool(
+      runRules.threeStarPool,
+      runRules.id === 'genshin-character' && selectedWishType === 'weapon' ? genshinWeaponThreeStarPool : '3-star reward',
+    )
     const limit = stopOnFeatured ? 500 : requestedPulls
     const batch: PullResult[] = []
     let nextPity5 = pity5

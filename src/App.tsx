@@ -18,6 +18,7 @@ import './App.css'
 import { sourcedCharacterBanners, sourcedWeaponBanners } from './genshinHistory'
 import { starRailCharacterRecords, starRailWeaponRecords } from './starRailHistory'
 import { starRailCharacterImages, starRailRewardImages } from './starRailAssets'
+import { wuwaCharacterRecords, wuwaWeaponRecords } from './wuwaHistory'
 
 type BannerRules = {
   id: string
@@ -85,6 +86,10 @@ const starRailStandardLightConePool = ['Night on the Milky Way', 'In the Name of
 const starRailFourStarLightConePool = ['Good Night and Sleep Well', 'Memories of the Past', 'The Moles Welcome You', 'A Secret Vow', 'Dance! Dance! Dance!', 'Resolution Shines As Pearls of Sweat']
 const starRailThreeStarPool = ['Arrows', 'Cornucopia', 'Collapsing Sky', 'Void', 'Chorus', 'Data Bank', 'Darting Arrow', 'Defense', 'Fine Fruit', 'Hidden Shadow', 'Lingering Tear', 'Loop', 'Mediation', 'Meshing Cogs', 'Multiplication', 'Mutual Demise', 'Passkey', 'Pioneering', 'Reminiscence', 'Sagacity', 'Shadowburn', 'Shattered Home', 'Sneering']
 const starRailFourStarCharacterPool = ['March 7th', 'Dan Heng', 'Asta', 'Arlan', 'Herta', 'Hook', 'Natasha', 'Pela', 'Sampo', 'Serval', 'Sushang', 'Tingyun', 'Qingque', 'Luka', 'Lynx', 'Guinaifen', 'Misha', 'Xueyi', 'Gallagher', 'Moze', 'Yukong', 'Hanya']
+const wuwaStandardWeaponPool = ['Ages of Harvest', 'Verity\'s Handle', 'Lustrous Razor', 'Emerald of Genesis', 'Static Mist']
+const wuwaFourStarPool = ['Baizhi', 'Yangyang', 'Chixia', 'Sanhua', 'Mortefi', 'Danjin', 'Taoqi', 'Yuanwu', 'Aalto', 'Youhu', 'Baizhi']
+const wuwaThreeStarPool = ['Originite: Type IV', 'Originite: Type II', 'Originite: Type I', 'Sword of Night', 'Training Broadblade']
+const wuwaWeaponThreeStarPool = ['Originite: Type IV', 'Originite: Type II', 'Originite: Type I', 'Tyro Sword', 'Tyro Broadblade']
 
 type PullResult = {
   id: string
@@ -327,15 +332,27 @@ const starRailWeaponBanners: BannerChoice[] = starRailWeaponRecords.map((source)
   featuredFourStars: [],
 }))
 
+const wuwaCharacterBanners: BannerChoice[] = wuwaCharacterRecords.map((source) => ({
+  ...source,
+  name: source.featuredName,
+  featuredNames: [source.featuredName],
+  featuredFourStars: [],
+}))
+
+const wuwaWeaponBanners: BannerChoice[] = wuwaWeaponRecords.map((source) => ({
+  ...source,
+  name: source.featuredName,
+  featuredNames: [source.featuredName],
+  featuredFourStars: [],
+}))
+
 const bannerChoices: Record<string, BannerChoice[]> = {
   'genshin-character': genshinCharacterBanners,
   'star-rail-character': starRailCharacterBanners,
   'zenless-signal': ['Ellen', 'Zhu Yuan', 'Jane Doe', 'Yanagi'].map((name) => ({
     id: name.toLowerCase().replaceAll(' ', '-'), name, featuredName: name, version: 'All versions', featuredFourStars: [], imageUrl: defaultCharacterAsset,
   })),
-  'wuwa-convene': ['Jiyan', 'Changli', 'Zhezhi', 'Camellya'].map((name) => ({
-    id: name.toLowerCase(), name, featuredName: name, version: 'All versions', featuredFourStars: [], imageUrl: defaultCharacterAsset,
-  })),
+  'wuwa-convene': wuwaCharacterBanners,
 }
 
 const genshinWeaponPhaseBanners: BannerChoice[] = [
@@ -359,6 +376,7 @@ const weaponBannerChoices = genshinWeaponBanners
 const weaponChoicesByPreset: Record<string, BannerChoice[]> = {
   'genshin-character': weaponBannerChoices,
   'star-rail-character': starRailWeaponBanners,
+  'wuwa-convene': wuwaWeaponBanners,
 }
 const genshinWeaponReleaseVersions = new Map<string, string>([
   ['engulfing lightning', '2.1'],
@@ -507,6 +525,8 @@ function App() {
       ...starRailCharacterRecords.map((item) => [item.featuredName.toLowerCase(), item.imageUrl] as const),
       ...Object.entries(starRailCharacterImages),
       ...starRailWeaponRecords.map((item) => [item.featuredName.toLowerCase(), item.imageUrl] as const),
+      ...wuwaCharacterRecords.map((item) => [item.featuredName.toLowerCase(), item.imageUrl] as const),
+      ...wuwaWeaponRecords.map((item) => [item.featuredName.toLowerCase(), item.imageUrl] as const),
       ...Object.entries(starRailRewardImages),
     ]),
   )
@@ -539,9 +559,9 @@ function App() {
   const activeBannerFace = useMemo(() => pickBannerFace(activeRules), [activeRules])
   const activeFeaturedPool = activeRules.featuredPool.length > 0 ? activeRules.featuredPool : [activeRules.featuredName]
   const activeOffBannerPool = activeRules.offBannerPool.length > 0 ? activeRules.offBannerPool : [activeRules.offBannerName]
-  const activeBannerChoices = activeRules.id === 'genshin-character' || activeRules.id === 'star-rail-character'
+  const activeBannerChoices = activeRules.id === 'genshin-character' || activeRules.id === 'star-rail-character' || activeRules.id === 'wuwa-convene'
     ? selectedWishType === 'character'
-      ? activeRules.id === 'genshin-character' ? liveGenshinBanners : starRailCharacterBanners
+      ? activeRules.id === 'genshin-character' ? liveGenshinBanners : activeRules.id === 'star-rail-character' ? starRailCharacterBanners : wuwaCharacterBanners
       : weaponChoicesByPreset[activeRules.id] ?? []
     : bannerChoices[activeRules.id] ?? []
   const bannerVersions = activeRules.id === 'genshin-character'
@@ -589,13 +609,17 @@ function App() {
       featuredName: choice.featuredName,
       featuredPool: choice.featuredNames ?? [choice.featuredName],
       offBannerPool: wishType === 'weapon'
-        ? activeRules.id === 'genshin-character' ? genshinStandardWeaponPool : starRailStandardLightConePool
+        ? activeRules.id === 'genshin-character'
+          ? genshinStandardWeaponPool
+          : activeRules.id === 'star-rail-character' ? starRailStandardLightConePool : wuwaStandardWeaponPool
         : current.offBannerPool,
       fourStarPool: choice.featuredFourStars,
       threeStarPool: activeRules.id === 'genshin-character' && wishType === 'weapon'
         ? genshinWeaponThreeStarPool
         : activeRules.id === 'star-rail-character'
           ? starRailThreeStarPool
+          : activeRules.id === 'wuwa-convene'
+            ? wishType === 'weapon' ? wuwaWeaponThreeStarPool : wuwaThreeStarPool
         : current.threeStarPool,
       imageUrl: choice.imageUrl,
       bannerVersion: choice.version,
@@ -777,6 +801,8 @@ function App() {
         ? starRailFourStarLightConePool
         : runRules.id === 'star-rail-character'
           ? starRailFourStarCharacterPool
+          : runRules.id === 'wuwa-convene'
+            ? wuwaFourStarPool
           : '4-star reward'
     const fourStarPool = availablePool(runRules.fourStarPool, fourStarFallback)
     const threeStarPool = availablePool(
@@ -785,6 +811,8 @@ function App() {
         ? genshinWeaponThreeStarPool
         : runRules.id === 'star-rail-character' && selectedWishType === 'weapon'
           ? starRailThreeStarPool
+          : runRules.id === 'wuwa-convene'
+            ? selectedWishType === 'weapon' ? wuwaWeaponThreeStarPool : wuwaThreeStarPool
           : '3-star reward',
     )
     const limit = stopOnFeatured ? 500 : requestedPulls
@@ -999,7 +1027,7 @@ function App() {
             <div className="banner-picker" aria-label="Choose a banner">
               <div className="banner-picker-heading">
                 <span className="eyebrow">Choose banner</span>
-                {(activeRules.id === 'genshin-character' || activeRules.id === 'star-rail-character') && <div className="collection-toggle" role="tablist" aria-label="Wish type">
+                {(activeRules.id === 'genshin-character' || activeRules.id === 'star-rail-character' || activeRules.id === 'wuwa-convene') && <div className="collection-toggle" role="tablist" aria-label="Wish type">
                   {(['character', 'weapon'] as const).map((wishType) => (
                     <button
                       className={selectedWishType === wishType ? 'active' : ''}
@@ -1009,7 +1037,7 @@ function App() {
                         setSelectedWishType(wishType)
                         setSelectedBannerVersion('All versions')
                         const choices = wishType === 'character'
-                          ? activeRules.id === 'genshin-character' ? liveGenshinBanners : starRailCharacterBanners
+                          ? activeRules.id === 'genshin-character' ? liveGenshinBanners : activeRules.id === 'star-rail-character' ? starRailCharacterBanners : wuwaCharacterBanners
                           : weaponChoicesByPreset[activeRules.id] ?? []
                         if (choices[0]) selectBanner(choices[0], wishType)
                       }}

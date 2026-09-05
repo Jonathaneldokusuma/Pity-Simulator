@@ -1,4 +1,5 @@
 const starRailAssetBase = 'https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/character/'
+const starRailLightConeBase = 'https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/image/light_cone_portrait/'
 
 export const starRailCharacterImages: Record<string, string> = {
   'acheron': `${starRailAssetBase}1308.png`,
@@ -57,8 +58,8 @@ export const starRailCharacterImages: Record<string, string> = {
 }
 
 export const starRailRewardImages: Record<string, string> = {
-  'adversarial': 'https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/light_cone/20014.png',
-  'amber': 'https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/light_cone/20003.png',
+  'adversarial': `${starRailLightConeBase}20014.png`,
+  'amber': `${starRailLightConeBase}20003.png`,
   'arlan': 'https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/character/1008.png',
   'arrows': 'https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/light_cone/20000.png',
   'asta': 'https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/icon/character/1009.png',

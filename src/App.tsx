@@ -626,7 +626,13 @@ function App() {
   }
 
   function getRewardImage(name: string) {
-    return genshinImages.get(name.toLowerCase()) || ''
+    const image = genshinImages.get(name.toLowerCase()) || ''
+    return image
+      .replace('/icon/light_cone/', '/image/light_cone_portrait/')
+      .replace(
+        /^https:\/\/www\.starrailbuilds\.com\/hsr-assets\/SpriteOutput\/LightConeMediumIcon\/(\d+)\.png$/,
+        'https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/image/light_cone_portrait/$1.png',
+      )
   }
 
   function isAvailableAtVersion(name: string, version: string | undefined) {
@@ -717,7 +723,7 @@ function App() {
         const image = imageMap.get(canonical.toLowerCase())
         if (image) imageMap.set(label, image)
       })
-      setGenshinImages(imageMap)
+      setGenshinImages((current) => new Map([...current, ...imageMap]))
       const releaseMap = new Map(characterRecords.flatMap((item) => {
         if (!item.name || !item.version) return []
         return [[item.name.toLowerCase(), item.version.replace(/^version\s*/i, '')] as [string, string]]

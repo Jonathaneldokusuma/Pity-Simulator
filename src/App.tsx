@@ -77,7 +77,7 @@ const currencyAssetByPreset: Record<string, string> = {
   'genshin-character': genshinPrimogemAsset,
   'star-rail-character': '/star-rail-stellar-jade.png',
   'zenless-signal': '/zenless-polychrome.svg',
-  'wuwa-convene': '/wuthering-waves-astrite.svg',
+  'wuwa-convene': '/wuthering-waves-astrite-v2.svg',
 }
 const genshinCharacterFourStarFallback = ['Xiangling', 'Barbara', 'Noelle', 'Fischl', 'Sucrose']
 const genshinWeaponFourStarFallback = ['Favonius Sword', 'The Stringless', 'Dragon\'s Bane', 'The Bell', 'Sacrificial Bow']

@@ -91,6 +91,19 @@ const wuwaStandardWeaponPool = ['Ages of Harvest', 'Verity\'s Handle', 'Lustrous
 const wuwaFourStarPool = ['Baizhi', 'Yangyang', 'Chixia', 'Sanhua', 'Mortefi', 'Danjin', 'Taoqi', 'Yuanwu', 'Aalto', 'Youhu', 'Baizhi']
 const wuwaThreeStarPool = ['Originite: Type IV', 'Originite: Type II', 'Originite: Type I', 'Sword of Night', 'Training Broadblade']
 const wuwaWeaponThreeStarPool = ['Originite: Type IV', 'Originite: Type II', 'Originite: Type I', 'Tyro Sword', 'Tyro Broadblade']
+const wuwaCharacterRewardImages = new Map(
+  ['Baizhi', 'Yangyang', 'Chixia', 'Sanhua', 'Mortefi', 'Danjin', 'Taoqi', 'Yuanwu', 'Aalto', 'Youhu']
+    .map((name) => [name.toLowerCase(), `https://raw.githubusercontent.com/ryanbenson/wuthering-waves-assets/master/images/${name}.png`] as const),
+)
+const wuwaWeaponRewardImages = new Map([
+  ['originite: type iv', 'OriginiteTypeIV'],
+  ['originite: type ii', 'OriginiteTypeII'],
+  ['originite: type i', 'OriginiteTypeI'],
+  ['sword of night', 'SwordOfNight'],
+  ['training broadblade', 'TrainingBroadblade'],
+  ['tyro sword', 'TyroSword'],
+  ['tyro broadblade', 'TyroBroadblade'],
+].map(([name, asset]) => [name, `https://raw.githubusercontent.com/ryanbenson/wuthering-waves-assets/master/images/weapons/${asset}.png`] as const))
 const collaborationNames = new Set(['aloy', 'archer', 'saber', 'rin tohsaka', 'gilgamesh', 'lucy', 'rebecca', 'lucilla'])
 
 type PullResult = {
@@ -532,6 +545,8 @@ function App() {
       ...starRailWeaponRecords.map((item) => [item.featuredName.toLowerCase(), item.imageUrl] as const),
       ...wuwaCharacterRecords.map((item) => [item.featuredName.toLowerCase(), item.imageUrl] as const),
       ...wuwaWeaponRecords.map((item) => [item.featuredName.toLowerCase(), item.imageUrl] as const),
+      ...wuwaCharacterRewardImages,
+      ...wuwaWeaponRewardImages,
       ...Object.entries(starRailRewardImages),
     ]),
   )

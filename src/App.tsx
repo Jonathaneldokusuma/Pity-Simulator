@@ -1014,7 +1014,9 @@ function App() {
                         if (choices[0]) selectBanner(choices[0], wishType)
                       }}
                     >
-                      {wishType === 'character' ? 'Characters' : 'Weapons'}
+                      {wishType === 'character'
+                        ? 'Characters'
+                        : activeRules.id === 'star-rail-character' ? 'Light Cones' : 'Weapons'}
                     </button>
                   ))}
                 </div>}
@@ -1045,7 +1047,11 @@ function App() {
           )}
             <div className="summon-stage">
               <div className="summon-art-wrap">
-                <div className="banner-badge">{activeRules.bannerKind}</div>
+                <div className="banner-badge">
+                  {activeRules.bannerKind === 'weapon' && activeRules.id === 'star-rail-character'
+                    ? 'light cone'
+                    : activeRules.bannerKind}
+                </div>
                 {(activeBannerChoices.find((choice) => choice.id === selectedBannerId)?.imageUrls ?? [activeImageUrl]).map((imageUrl, index) => (
                   <img
                     className="summon-art"
@@ -1062,7 +1068,11 @@ function App() {
               <p className="eyebrow">{activeRules.game}</p>
               <h2 id="summon-heading">{activeRules.banner}</h2>
               <div className="banner-rail">
-                <span className={`banner-pill ${activeRules.bannerKind}`}>{activeRules.bannerKind}</span>
+                <span className={`banner-pill ${activeRules.bannerKind}`}>
+                  {activeRules.bannerKind === 'weapon' && activeRules.id === 'star-rail-character'
+                    ? 'light cone'
+                    : activeRules.bannerKind}
+                </span>
                 <span className="banner-pill subtle">Featured pool: {activeFeaturedPool.length}</span>
                 <span className="banner-pill subtle">Off-banner pool: {activeOffBannerPool.length}</span>
               </div>

@@ -14,7 +14,7 @@ export const starRailCharacterRecords: StarRailBannerRecord[] = [
   { id: 'star-rail-character-1-2-p2-kafka-5', version: '1.2', phase: 2, featuredName: "Kafka", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1005.png" },
   { id: 'star-rail-character-1-2-p1-blade-6', version: '1.2', phase: 1, featuredName: "Blade", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1205.png" },
   { id: 'star-rail-character-1-3-p2-fu-xuan-7', version: '1.3', phase: 2, featuredName: "Fu Xuan", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1208.png" },
-  { id: 'star-rail-character-1-3-p1-dan-heng-imbibitor-lunae-8', version: '1.3', phase: 1, featuredName: "Dan Heng • Imbibitor Lunae", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1213.png" },
+  { id: 'star-rail-character-1-3-p1-dan-heng-imbibitor-lunae-8', version: '1.3', phase: 1, featuredName: "Dan Heng - Imbibitor Lunae", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1213.png" },
   { id: 'star-rail-character-1-4-p2-seele-9', version: '1.4', phase: 2, featuredName: "Seele", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1102.png" },
   { id: 'star-rail-character-1-4-p2-topaz-and-numby-10', version: '1.4', phase: 2, featuredName: "Topaz and Numby", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1112.png" },
   { id: 'star-rail-character-1-4-p1-jingliu-11', version: '1.4', phase: 1, featuredName: "Jingliu", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1212.png" },
@@ -27,7 +27,7 @@ export const starRailCharacterRecords: StarRailBannerRecord[] = [
   { id: 'star-rail-character-1-6-p1-ruan-mei-18', version: '1.6', phase: 1, featuredName: "Ruan Mei", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1303.png" },
   { id: 'star-rail-character-2-0-p2-sparkle-19', version: '2.0', phase: 2, featuredName: "Sparkle", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1306.png" },
   { id: 'star-rail-character-2-0-p2-jing-yuan-20', version: '2.0', phase: 2, featuredName: "Jing Yuan", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1204.png" },
-  { id: 'star-rail-character-2-0-p1-dan-heng-imbibitor-lunae-21', version: '2.0', phase: 1, featuredName: "Dan Heng • Imbibitor Lunae", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1213.png" },
+  { id: 'star-rail-character-2-0-p1-dan-heng-imbibitor-lunae-21', version: '2.0', phase: 1, featuredName: "Dan Heng - Imbibitor Lunae", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1213.png" },
   { id: 'star-rail-character-2-0-p1-black-swan-22', version: '2.0', phase: 1, featuredName: "Black Swan", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1307.png" },
   { id: 'star-rail-character-2-1-p2-jingliu-23', version: '2.1', phase: 2, featuredName: "Jingliu", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1212.png" },
   { id: 'star-rail-character-2-1-p2-aventurine-24', version: '2.1', phase: 2, featuredName: "Aventurine", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1304.png" },
@@ -53,7 +53,7 @@ export const starRailCharacterRecords: StarRailBannerRecord[] = [
   { id: 'star-rail-character-2-5-p1-feixiao-44', version: '2.5', phase: 1, featuredName: "Feixiao", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1220.png" },
   { id: 'star-rail-character-2-6-p2-aventurine-45', version: '2.6', phase: 2, featuredName: "Aventurine", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1304.png" },
   { id: 'star-rail-character-2-6-p2-acheron-46', version: '2.6', phase: 2, featuredName: "Acheron", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1308.png" },
-  { id: 'star-rail-character-2-6-p1-dan-heng-imbibitor-lunae-47', version: '2.6', phase: 1, featuredName: "Dan Heng • Imbibitor Lunae", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1213.png" },
+  { id: 'star-rail-character-2-6-p1-dan-heng-imbibitor-lunae-47', version: '2.6', phase: 1, featuredName: "Dan Heng - Imbibitor Lunae", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1213.png" },
   { id: 'star-rail-character-2-6-p1-rappa-48', version: '2.6', phase: 1, featuredName: "Rappa", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1317.png" },
   { id: 'star-rail-character-2-7-p2-firefly-49', version: '2.7', phase: 2, featuredName: "Firefly", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1310.png" },
   { id: 'star-rail-character-2-7-p2-fugue-50', version: '2.7', phase: 2, featuredName: "Fugue", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1225.png" },
@@ -92,7 +92,7 @@ export const starRailCharacterRecords: StarRailBannerRecord[] = [
   { id: 'star-rail-character-3-5-p2-cerydra-83', version: '3.5', phase: 2, featuredName: "Cerydra", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1412.png" },
   { id: 'star-rail-character-3-5-p1-kafka-84', version: '3.5', phase: 1, featuredName: "Kafka", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1005.png" },
   { id: 'star-rail-character-3-5-p1-hysilens-85', version: '3.5', phase: 1, featuredName: "Hysilens", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1410.png" },
-  { id: 'star-rail-character-3-6-p2-dan-heng-permansor-terrae-86', version: '3.6', phase: 2, featuredName: "Dan Heng • Permansor Terrae", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1414.png" },
+  { id: 'star-rail-character-3-6-p2-dan-heng-permansor-terrae-86', version: '3.6', phase: 2, featuredName: "Dan Heng - Permansor Terrae", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1414.png" },
   { id: 'star-rail-character-3-6-p2-anaxa-87', version: '3.6', phase: 2, featuredName: "Anaxa", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1405.png" },
   { id: 'star-rail-character-3-6-p1-the-herta-88', version: '3.6', phase: 1, featuredName: "The Herta", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1401.png" },
   { id: 'star-rail-character-3-6-p1-evernight-89', version: '3.6', phase: 1, featuredName: "Evernight", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1413.png" },
@@ -136,13 +136,13 @@ export const starRailCharacterRecords: StarRailBannerRecord[] = [
   { id: 'star-rail-character-4-4-p2-aventurine-127', version: '4.4', phase: 2, featuredName: "Aventurine", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1304.png" },
   { id: 'star-rail-character-4-4-p2-cerydra-128', version: '4.4', phase: 2, featuredName: "Cerydra", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1304.png" },
   { id: 'star-rail-character-4-4-p1-himeko-nova-129', version: '4.4', phase: 1, featuredName: "Himeko • Nova", imageUrl: "https://www.starrailbuilds.com/hsr-assets/icon/character/1510.png" },
-  { id: 'star-rail-character-4-4-p1-dan-heng-permansor-terrae-130', version: '4.4', phase: 1, featuredName: "Dan Heng • Permansor Terrae", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1413.png" },
+  { id: 'star-rail-character-4-4-p1-dan-heng-permansor-terrae-130', version: '4.4', phase: 1, featuredName: "Dan Heng - Permansor Terrae", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1413.png" },
   { id: 'star-rail-character-4-4-p1-evernight-131', version: '4.4', phase: 1, featuredName: "Evernight", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1413.png" },
   { id: 'star-rail-character-4-4-p1-sparxie-132', version: '4.4', phase: 1, featuredName: "Sparxie", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1413.png" },
   { id: 'star-rail-character-4-5-p2-ashveil-133', version: '4.5', phase: 2, featuredName: "Ashveil", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1504.png" },
-  { id: 'star-rail-character-4-5-p2-aventurine-waveflair-134', version: '4.5', phase: 2, featuredName: "Aventurine • Waveflair", imageUrl: "https://www.starrailbuilds.com/hsr-assets/icon/character/1513.png" },
+  { id: 'star-rail-character-4-5-p2-aventurine-waveflair-134', version: '4.5', phase: 2, featuredName: "Aventurine - Waveflair", imageUrl: "https://www.starrailbuilds.com/hsr-assets/icon/character/1513.png" },
   { id: 'star-rail-character-4-5-p1-hyacine-135', version: '4.5', phase: 1, featuredName: "Hyacine", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/AvatarRoundIcon/Avatar/1409.png" },
-  { id: 'star-rail-character-4-5-p1-robin-summeretto-136', version: '4.5', phase: 1, featuredName: "Robin • Summeretto", imageUrl: "https://www.starrailbuilds.com/hsr-assets/icon/character/1512.png" },
+  { id: 'star-rail-character-4-5-p1-robin-summeretto-136', version: '4.5', phase: 1, featuredName: "Robin - Summeretto", imageUrl: "https://www.starrailbuilds.com/hsr-assets/icon/character/1512.png" },
 ];
 
 export const starRailWeaponRecords: StarRailBannerRecord[] = [
@@ -283,4 +283,3 @@ export const starRailWeaponRecords: StarRailBannerRecord[] = [
   { id: 'star-rail-weapon-4-5-p1-rise-and-sing-135', version: '4.5', phase: 1, featuredName: "Rise and Sing", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/LightConeMediumIcon/23063.png" },
   { id: 'star-rail-weapon-4-5-p1-long-may-rainbows-adorn-the-sky-136', version: '4.5', phase: 1, featuredName: "Long May Rainbows Adorn the Sky", imageUrl: "https://www.starrailbuilds.com/hsr-assets/SpriteOutput/LightConeMediumIcon/23042.png" },
 ];
-

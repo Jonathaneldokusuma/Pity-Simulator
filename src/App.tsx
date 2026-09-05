@@ -17,7 +17,7 @@ import {
 import './App.css'
 import { sourcedCharacterBanners, sourcedWeaponBanners } from './genshinHistory'
 import { starRailCharacterRecords, starRailWeaponRecords } from './starRailHistory'
-import { starRailRewardImages } from './starRailAssets'
+import { starRailCharacterImages, starRailRewardImages } from './starRailAssets'
 
 type BannerRules = {
   id: string
@@ -317,6 +317,7 @@ const starRailCharacterBanners: BannerChoice[] = starRailCharacterRecords.map((s
   name: source.featuredName,
   featuredNames: [source.featuredName],
   featuredFourStars: [],
+  imageUrl: starRailCharacterImages[source.featuredName.toLowerCase()] ?? source.imageUrl,
 }))
 
 const starRailWeaponBanners: BannerChoice[] = starRailWeaponRecords.map((source) => ({
@@ -504,6 +505,7 @@ function App() {
     () => new Map([
       ...sourcedWeaponBanners.map((item) => [item.featuredName.toLowerCase(), sourceImageUrl(item.imageUrl)] as const),
       ...starRailCharacterRecords.map((item) => [item.featuredName.toLowerCase(), item.imageUrl] as const),
+      ...Object.entries(starRailCharacterImages),
       ...starRailWeaponRecords.map((item) => [item.featuredName.toLowerCase(), item.imageUrl] as const),
       ...Object.entries(starRailRewardImages),
     ]),

@@ -69,6 +69,12 @@ type GenshinDbCharacter = {
 const defaultCharacterAsset = '/summon-prism.svg'
 const brandLogoAsset = '/gacha-logo.png'
 const genshinPrimogemAsset = '/genshin-primogem.png'
+const currencyAssetByPreset: Record<string, string> = {
+  'genshin-character': genshinPrimogemAsset,
+  'star-rail-character': '/star-rail-stellar-jade.svg',
+  'zenless-signal': '/zenless-polychrome.svg',
+  'wuwa-convene': '/wuthering-waves-astrite.svg',
+}
 const genshinCharacterFourStarFallback = ['Xiangling', 'Barbara', 'Noelle', 'Fischl', 'Sucrose']
 const genshinWeaponFourStarFallback = ['Favonius Sword', 'The Stringless', 'Dragon\'s Bane', 'The Bell', 'Sacrificial Bow']
 const genshinStandardWeaponPool = ['Aquila Favonia', 'Skyward Blade', 'Skyward Pride', 'Skyward Harp', 'Skyward Atlas', 'Lost Prayer to the Sacred Winds', 'Amos\' Bow', 'Wolf\'s Gravestone']
@@ -481,7 +487,7 @@ function App() {
   const [sourceMessage, setSourceMessage] = useState('')
 
   const activeRules = useMemo(() => normalizeRules(rules), [rules])
-  const isGenshin = activeRules.id === 'genshin-character'
+  const currencyAsset = currencyAssetByPreset[activeRules.id]
   const nextFiveChance = useMemo(
     () => getFiveStarChance(activeRules, pity5),
     [activeRules, pity5],
@@ -1040,15 +1046,15 @@ function App() {
 
           <div className="pull-actions">
             <button className="button primary" type="button" disabled={!hasVersionBanner} onClick={() => performPulls(1)}>
-              {isGenshin ? <img className="genshin-control-icon" src={genshinPrimogemAsset} alt="" /> : <Sparkles size={18} aria-hidden="true" />}
+              {currencyAsset ? <img className="currency-control-icon" src={currencyAsset} alt="" /> : <Sparkles size={18} aria-hidden="true" />}
               1 Pull
             </button>
             <button className="button primary" type="button" disabled={!hasVersionBanner} onClick={() => performPulls(10)}>
-              {isGenshin ? <img className="genshin-control-icon" src={genshinPrimogemAsset} alt="" /> : <Sparkles size={18} aria-hidden="true" />}
+              {currencyAsset ? <img className="currency-control-icon" src={currencyAsset} alt="" /> : <Sparkles size={18} aria-hidden="true" />}
               10 Pulls
             </button>
             <button className="button accent" type="button" disabled={!hasVersionBanner} onClick={() => performPulls(1, true)}>
-              {isGenshin ? <img className="genshin-control-icon" src={genshinPrimogemAsset} alt="" /> : <WandSparkles size={18} aria-hidden="true" />}
+              {currencyAsset ? <img className="currency-control-icon" src={currencyAsset} alt="" /> : <WandSparkles size={18} aria-hidden="true" />}
               Until Featured
             </button>
           </div>
@@ -1124,7 +1130,7 @@ function App() {
           </div>
 
           <div className="spent-box">
-            {isGenshin ? <img className="genshin-control-icon" src={genshinPrimogemAsset} alt="" /> : <Sparkles size={18} aria-hidden="true" />}
+            {currencyAsset ? <img className="currency-control-icon" src={currencyAsset} alt="" /> : <Sparkles size={18} aria-hidden="true" />}
             <span>{numberFormatter.format(totals.spent)}</span>
             <small>{activeRules.currencyName}</small>
           </div>

@@ -499,7 +499,7 @@ input:focus-visible {
   flex: 1 1 0;
 }
 
-.genshin-control-icon {
+.currency-control-icon {
   width: 24px;
   height: 24px;
   flex: 0 0 24px;
@@ -605,7 +605,7 @@ input:focus-visible {
   color: rgba(34, 25, 11, 0.68);
 }
 
-.spent-box .genshin-control-icon {
+.spent-box .currency-control-icon {
   width: 26px;
   height: 26px;
   flex-basis: 26px;
